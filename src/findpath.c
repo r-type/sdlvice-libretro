@@ -57,8 +57,9 @@ char *findpath(const char *cmd, const char *syspath, int mode)
     buf = lib_malloc(maxpathlen);
 
     buf[0] = '\0'; /* this will (and needs to) stay '\0' */
-
+ //printf("cmd:(%s)\n",cmd);
     if (strchr(cmd, FSDEV_DIR_SEP_CHR)) {
+
         size_t l;
         int state;
         const char *ps;
@@ -67,10 +68,16 @@ char *findpath(const char *cmd, const char *syspath, int mode)
             if (ioutil_getcwd(buf + 1, (int)maxpathlen - 128) == NULL) {
                 goto fail;
             }
-
+//printf("ICI\n");
             l = strlen(buf + 1);
         } else {
             l = 0;
+#ifdef WIIU
+	//if(cmd[0]=='s' && cmd[1]=='d')sprintf(buf,"sd:/\0");
+	//else if (cmd[0]=='u' && cmd[1]=='s'&& cmd[2]=='b')sprintf(buf,"usb0:/\0");
+	//l = strlen(buf + 1);
+#endif
+//printf("LA\n");
         }
 
         if (l + strlen(cmd) >= maxpathlen - 5) {
@@ -81,9 +88,13 @@ char *findpath(const char *cmd, const char *syspath, int mode)
         pd = buf + l; /* buf + 1 + l - 1 */
 
 #if (FSDEV_DIR_SEP_CHR == '/')
+#ifndef WIIU
         if (*pd++ != '/') {
             *pd++ = '/';
         }
+#else
+	pd++;
+#endif
 #else
         pd++;
 #endif
@@ -148,7 +159,7 @@ char *findpath(const char *cmd, const char *syspath, int mode)
         const char *path = syspath;
         const char *s;
         size_t cl = strlen(cmd) + 1;
-
+//printf("sysp:(%s)\n",syspath);
         for (s = path; s; path = s + 1) {
             char * p;
             int l;
@@ -186,6 +197,8 @@ char *findpath(const char *cmd, const char *syspath, int mode)
 #endif
             }
             if (ioutil_access(buf + 1, mode) == 0) {
+//char *ttt=buf+1;
+//printf("OK:(%s)\n",ttt);
                 pd = p /* + cl*/;
                 break;
             }
@@ -207,7 +220,7 @@ char *findpath(const char *cmd, const char *syspath, int mode)
 #endif
 
         tmpbuf = lib_stralloc(buf + 1);
-        lib_free(buf);
+        lib_free(buf); //printf("fp:(%s)\n",tmpbuf);
         return tmpbuf;
     }
 fail:

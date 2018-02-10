@@ -77,10 +77,14 @@ static int set_sid_engine(int set_engine, void *param)
     int engine = set_engine;
 
     if (engine == SID_ENGINE_DEFAULT) {
+#ifdef WIIU
+        engine = SID_ENGINE_FASTSID;
+#else
 #ifdef HAVE_RESID
         engine = SID_ENGINE_RESID;
 #else
         engine = SID_ENGINE_FASTSID;
+#endif
 #endif
     }
 

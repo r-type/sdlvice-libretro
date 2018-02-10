@@ -60,6 +60,18 @@
 #include "vsidui_sdl.h"
 #include "vsync.h"
 
+#ifdef __LIBRETRO__	/* RETRO HACK */
+#ifdef HAVE_LIBCO
+#define LIBCO_C 
+#include "libco/libco.h"
+//#include "libco/libco.c"
+extern cothread_t mainThread;
+extern cothread_t emuThread;
+#else
+extern int CPULOOP;
+#endif
+#endif	/* RETRO HACK */
+
 #ifdef SDL_DEBUG
 #define DBG(x)  log_debug x
 #else
@@ -167,10 +179,14 @@ static int set_sdl_bitdepth(int d, void *param)
             break;
         case 32:
             texformat = SDL_PIXELFORMAT_ARGB8888;
+#ifdef WIIU
+            rmask = 0x00ff0000, gmask = 0x0000ff00, bmask = 0x000000ff, amask = 0xff000000;
+#else
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
             rmask = 0x0000ff00, gmask = 0x00ff0000, bmask = 0xff000000, amask = 0x000000ff;
 #else
             rmask = 0x00ff0000, gmask = 0x0000ff00, bmask = 0x000000ff, amask = 0xff000000;
+#endif
 #endif
             break;
         default:
@@ -427,6 +443,16 @@ static const resource_string_t resources_string[] = {
 #define SDLCUSTOMHEIGHT_DEFAULT  600
 #endif
 
+#ifdef WIIU
+#define SDLLIMITMODE_DEFAULT     SDL_LIMIT_MODE_MAX
+#define SDLCUSTOMWIDTH_DEFAULT   384
+#define SDLCUSTOMHEIGHT_DEFAULT  272
+#else
+#define SDLLIMITMODE_DEFAULT     SDL_LIMIT_MODE_OFF
+#define SDLCUSTOMWIDTH_DEFAULT   384*2
+#define SDLCUSTOMHEIGHT_DEFAULT  272*2
+#endif
+
 static const resource_int_t resources_int[] = {
     { "SDLBitdepth", VICE_DEFAULT_BITDEPTH, RES_EVENT_NO, NULL,
       &sdl_bitdepth, set_sdl_bitdepth, NULL },
@@ -633,6 +659,11 @@ static void sdl_gl_set_viewport(unsigned int src_w, unsigned int src_h, unsigned
 }
 #endif
 
+#ifdef __LIBRETRO__
+SDL_Surface* screenSurface = NULL;
+extern uint32_t *videoBuffer;
+#endif
+
 #ifndef USE_SDLUI2
 static video_canvas_t *sdl_canvas_create(video_canvas_t *canvas, unsigned int *width, unsigned int *height)
 {
@@ -788,6 +819,8 @@ static video_canvas_t *sdl_canvas_create(video_canvas_t *canvas, unsigned int *w
         SDL_EventState(SDL_VIDEORESIZE, SDL_IGNORE);
 #endif
 #ifndef HAVE_HWSCALE
+#warning not hwscale
+printf("resinit:(%dx%dx%d)\n",actual_width, actual_height, sdl_bitdepth);
         new_screen = SDL_SetVideoMode(actual_width, actual_height, sdl_bitdepth, flags);
         new_width = new_screen->w;
         new_height = new_screen->h;
@@ -853,6 +886,8 @@ static video_canvas_t *sdl_canvas_create(video_canvas_t *canvas, unsigned int *w
             SDL_FreeSurface(canvas->screen);
         }
         new_screen = SDL_CreateRGBSurface(SDL_SWSURFACE, new_width, new_height, sdl_bitdepth, 0, 0, 0, 0);
+
+#warning DDD
     }
 
     if (!new_screen) {
@@ -860,7 +895,8 @@ static video_canvas_t *sdl_canvas_create(video_canvas_t *canvas, unsigned int *w
         return NULL;
     }
     sdl_bitdepth = new_screen->format->BitsPerPixel;
-
+videoBuffer=(unsigned int *)new_screen->pixels;
+printf("RES:(%dx%dx%d)\n",new_width, new_height, sdl_bitdepth);
     canvas->depth = sdl_bitdepth;
     canvas->width = new_width;
     canvas->height = new_height;
@@ -894,6 +930,7 @@ static video_canvas_t *sdl_canvas_create(video_canvas_t *canvas, unsigned int *w
     return canvas;
 }
 #else
+
 static video_canvas_t *sdl_canvas_create(video_canvas_t *canvas, unsigned int *width, unsigned int *height)
 {
     unsigned int new_width, new_height;
@@ -993,15 +1030,15 @@ static video_canvas_t *sdl_canvas_create(video_canvas_t *canvas, unsigned int *w
     }
 
     /* Obtain the Window with the corresponding size and behavior based on the flags */
-    new_window = SDL_CreateWindow(canvas->viewport->title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, window_w, window_h, SDL_WINDOW_OPENGL | flags);
+    new_window = SDL_CreateWindow(canvas->viewport->title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, window_w, window_h, /*SDL_WINDOW_OPENGL |*/ flags);
     if (new_window == NULL) {
         log_error(sdlvideo_log, "SDL_CreateWindow() failed: %s\n", SDL_GetError());
         return NULL;
     }
-
+#ifndef __LIBRETRO__
     ctx = SDL_GL_CreateContext(new_window);
     SDL_GL_MakeCurrent(new_window, ctx);
-
+#endif
     /* Allocate renderlist strings */
     renderlist = lib_malloc((renderamount + 1) * sizeof(char *));
 
@@ -1045,12 +1082,21 @@ static video_canvas_t *sdl_canvas_create(video_canvas_t *canvas, unsigned int *w
     log_message(sdlvideo_log, "Available Renderers: %s", rendername);
 
     if (new_window) {
+#ifdef __LIBRETRO__
+screenSurface = SDL_GetWindowSurface( new_window );
+new_renderer = SDL_CreateSoftwareRenderer(screenSurface);
+//videoBuffer=(unsigned int *)screenSurface->pixels;
+#else
         new_renderer = SDL_CreateRenderer(new_window, drv_index, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+#endif
         if (new_renderer) {
             SDL_SetRenderDrawColor(new_renderer, 0, 0, 0, 255);
             SDL_RenderClear(new_renderer);
             SDL_RenderPresent(new_renderer);
             new_screen = SDL_CreateRGBSurface(0, actual_width, actual_height, sdl_bitdepth, rmask, gmask, bmask, amask);
+#ifdef __LIBRETRO__
+	    videoBuffer=(unsigned int *)new_screen->pixels;
+#endif
             if (fullscreen) {
                 SDL_RenderSetLogicalSize(new_renderer, actual_width, actual_height);
             }
@@ -1080,7 +1126,7 @@ static video_canvas_t *sdl_canvas_create(video_canvas_t *canvas, unsigned int *w
         log_error(sdlvideo_log, "SDL_CreateWindow failed!");
         return NULL;
     }
-
+#ifndef __LIBRETRO__
     /* here SDL2 knows about what driver is used and has that loaded via dlopen (default behavior), 
        NOW we can get the proc adress from opengl/es/1/2 functions in there */
     glGetStringAPI = (glGetString_Func)SDL_GL_GetProcAddress("glGetString");
@@ -1090,6 +1136,7 @@ static video_canvas_t *sdl_canvas_create(video_canvas_t *canvas, unsigned int *w
     log_message(sdlvideo_log, "Version    : %s", glGetStringAPI(GL_VERSION));
 #ifdef SDL_DEBUG
     log_message(sdlvideo_log, "Extensions : %s", glGetStringAPI(GL_EXTENSIONS));
+#endif
 #endif
 
     /* some devices, OS do not provide a windowing system they have always a fixed width/height, 
@@ -1192,13 +1239,17 @@ void video_canvas_refresh(struct video_canvas_s *canvas, unsigned int xs, unsign
     }
 
 #ifndef USE_SDLUI2
+#ifndef __LIBRETRO__
     if (SDL_MUSTLOCK(canvas->screen)) {
         canvas->videoconfig->readable = 0;
         if (SDL_LockSurface(canvas->screen) < 0) {
             return;
         }
     } else { /* no direct rendering, safe to read */
+#else
         canvas->videoconfig->readable = !(canvas->screen->flags & SDL_HWSURFACE);
+    {
+#endif
     }
 #endif
 
@@ -1222,14 +1273,22 @@ void video_canvas_refresh(struct video_canvas_s *canvas, unsigned int xs, unsign
     }
 
 #ifndef USE_SDLUI2
+#ifndef __LIBRETRO__
     if (SDL_MUSTLOCK(canvas->screen)) {
         SDL_UnlockSurface(canvas->screen);
     }
+#endif
 #else
+#if 0 //ndef WIIU
     SDL_UpdateTexture(canvas->texture, NULL, canvas->screen->pixels, canvas->screen->pitch);
     SDL_RenderClear(canvas->renderer);
     SDL_RenderCopyEx(canvas->renderer, canvas->texture, NULL, NULL, 0, NULL, flip);
     SDL_RenderPresent(canvas->renderer);
+#endif
+#ifdef HAVE_LIBCO
+	//co_switch(mainThread);
+#endif
+
 #endif
 
 #if defined(HAVE_HWSCALE) && !defined(USE_SDLUI2)
@@ -1294,7 +1353,9 @@ void video_canvas_refresh(struct video_canvas_s *canvas, unsigned int xs, unsign
 #endif
 
 #ifndef USE_SDLUI2
+#ifndef __LIBRETRO__
     SDL_UpdateRect(canvas->screen, xi, yi, w, h);
+#endif
 #endif
 }
 

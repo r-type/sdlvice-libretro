@@ -1,0 +1,10 @@
+*~
+*.o
+*.so
+*.dll
+*.a
+**/.deps/**
+Makefile
+config.log
+config.status
+bin2c

@@ -96,6 +96,15 @@ int archdep_rtc_get_centisecond(void)
 int archdep_init_extra(int *argc, char **argv)
 {
     ssize_t read;
+#ifdef WIIU
+    archdep_pref_path = archdep_boot_path();
+    if (argv[0]) {
+        argv0 = lib_stralloc(argv[0]);
+        return 0;
+    }
+        return 0;
+#else 
+
 #if !defined(USE_PROC_SELF_EXE)
     /* first try to get exe name from argv[0] */
     if (argv[0]) {
@@ -117,6 +126,7 @@ int archdep_init_extra(int *argc, char **argv)
     archdep_pref_path = archdep_boot_path();
 #endif
     return 0;
+#endif
 }
 
 char *archdep_program_name(void)
@@ -137,8 +147,18 @@ char *archdep_program_name(void)
     return program_name;
 }
 
+#ifdef __LIBRETRO__
+extern char retro_system_data[512];
+#endif
+
 const char *archdep_boot_path(void)
 {
+
+#ifdef __LIBRETRO__
+ printf("bootp:(%s)\n",retro_system_data);
+ return retro_system_data;
+#endif
+
     if (boot_path == NULL) {
         /* FIXME: bad name of define */
 #ifdef USE_PROC_SELF_EXE
@@ -157,6 +177,10 @@ const char *archdep_boot_path(void)
 
 const char *archdep_home_path(void)
 {
+#ifdef __LIBRETRO__
+ printf("homep:(%s)\n",retro_system_data);
+ return retro_system_data;
+#endif
     /* FIXME: bad name of define */
 #ifdef USE_PROC_SELF_EXE
     /* everything is relative to the location of the exe which is already known
@@ -351,6 +375,15 @@ char *archdep_default_save_resource_file_name(void)
 
 FILE *archdep_open_default_log_file(void)
 {
+    char *fname;
+    FILE *f;
+
+    fname = util_concat(archdep_boot_path(), "/vice.log", NULL);
+    f = fopen(fname, "wt");
+    lib_free(fname);
+
+    return f;
+
     return stdout;
 }
 
@@ -367,8 +400,17 @@ int archdep_path_is_relative(const char *path)
     if (path == NULL) {
         return 0;
     }
+#ifdef WIIU
+	int tp=strlen(path);
 
+    if(tp<4)return 1;
+    if(path[0]=='s' && path[1]=='d' && path[2]==':'  && path[3]=='/')return 0;
+    if(tp<5)return 1;
+    if(path[0]=='u' && path[1]=='s' && path[2]=='b'  && path[3]==':' && path[4]=='/')return 0;
+    return 1;
+#else
     return *path != '/';
+#endif
 }
 
 int archdep_spawn(const char *name, char **argv, char **pstdout_redir, const char *stderr_redir)
@@ -376,7 +418,10 @@ int archdep_spawn(const char *name, char **argv, char **pstdout_redir, const cha
     pid_t child_pid;
     int child_status;
     char *stdout_redir;
-
+#ifdef WIIU
+        log_error(LOG_DEFAULT, "vfork() failed:wiiu");
+        return -1;
+#else
     child_pid = vfork();
 
     if (pstdout_redir != NULL) {
@@ -416,6 +461,7 @@ int archdep_spawn(const char *name, char **argv, char **pstdout_redir, const cha
     } else {
         return -1;
     }
+#endif
 }
 
 /* return malloc'd version of full pathname of orig_name */

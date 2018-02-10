@@ -35,12 +35,12 @@
 
 #include "vice_sdl.h"
 
-int main(int argc, char **argv)
+int vmain(int argc, char **argv)
 {
     return main_program(argc, argv);
 }
 
-void main_exit(void)
+void vmain_exit(void)
 {
     log_message(LOG_DEFAULT, "\nExiting...");
 

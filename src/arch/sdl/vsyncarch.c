@@ -44,6 +44,20 @@
 
 #include "vice_sdl.h"
 
+#ifdef __LIBRETRO__	/* RETRO HACK */
+#ifdef HAVE_LIBCO
+#define LIBCO_C 
+#include "libco/libco.h"
+//#include "libco/libco.c"
+extern cothread_t mainThread;
+extern cothread_t emuThread;
+#else
+extern int CPULOOP;
+#endif
+#if defined(WIIU)
+#include <features_cpu.h>
+#endif
+#endif	/* RETRO HACK */
 /* ------------------------------------------------------------------------- */
 
 /* SDL_Delay & GetTicks have 1ms resolution, while VICE needs 1us */
@@ -59,7 +73,11 @@ signed long vsyncarch_frequency(void)
 /* Get time in timer units. */
 unsigned long vsyncarch_gettime(void)
 {
+#if defined(WIIU)
+    return cpu_features_get_time_usec();
+#else
     return SDL_GetTicks() * (unsigned long)VICE_SDL_TICKS_SCALE;
+#endif
 }
 
 void vsyncarch_init(void)
@@ -78,7 +96,9 @@ void vsyncarch_display_speed(double speed, double frame_rate, int warp_enabled)
 /* Sleep a number of timer units. */
 void vsyncarch_sleep(signed long delay)
 {
+#ifndef __LIBRETRO__//WIIU
     SDL_Delay(delay / VICE_SDL_TICKS_SCALE);
+#endif
 }
 
 void vsyncarch_presync(void)
@@ -108,6 +128,10 @@ void vsyncarch_presync(void)
     if (!console_mode) {
         raster_force_repaint(sdl_active_canvas->parent_raster);
     }
+#endif
+#ifdef HAVE_LIBCO
+#warning co_switch
+	co_switch(mainThread);
 #endif
 }
 

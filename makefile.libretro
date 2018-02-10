@@ -1,0 +1,187 @@
+
+DEBUG = 0
+
+ifeq ($(platform),)
+platform = unix
+ifeq ($(shell uname -a),)
+   platform = win
+else ifneq ($(findstring Darwin,$(shell uname -a)),)
+   platform = osx
+else ifneq ($(findstring MINGW,$(shell uname -a)),)
+   platform = win
+endif
+endif
+
+TARGET_NAME := x64sdl
+
+CP:= cp
+
+ifeq ($(platform), unix)
+	CC = gcc
+	CXX = g++
+	AR = ar
+	CFLAGS = -O2 -Iinclude -D_GNU_SOURCE=1 -Wall -D__LIBRETRO__ -DHAVE_POW -DHAVE_MMAP=0 -DLINUX_CONFIG
+	CXXFLAGS = -g -O2  -fno-merge-constants 
+	TARGET := $(TARGET_NAME)_libretro.so
+	fpic := -fPIC
+#	SHARED := -shared -Wl,--no-undefined -Wl,--version-script=link.T
+	ENDIANNESS_DEFINES := -DLSB_FIRST
+	FLAGS += -D__LINUX__
+	EXTRA_LDF =  -fPIC -lm -lrt -lpthread  -lpng -lz
+	LDFLAGS += -shared -Wl,--version-script=$(CORE_DIR)/src/link.T 
+	SDL_PREFIX := unix
+# android arm
+else ifneq (,$(findstring android,$(platform)))
+   	TARGET := $(TARGET_NAME)_libretro.so
+   	fpic = -fPIC
+   	SHARED := -lstdc++ -llog -lz -shared -Wl,--version-script=link.T -Wl,--no-undefined
+	CFLAGS +=  -g -O2 
+   	CC = arm-linux-androideabi-gcc
+   	CXX = arm-linux-androideabi-g++
+	AR = arm-linux-androideabi-ar
+# Wii U
+else ifeq ($(platform), wiiu)
+	TARGET := $(TARGET_NAME)_wiiu_libretro.a
+	CC = $(DEVKITPPC)/bin/powerpc-eabi-gcc$(EXE_EXT)
+	CXX = $(DEVKITPPC)/bin/powerpc-eabi-g++$(EXE_EXT)
+	AR = $(DEVKITPPC)/bin/powerpc-eabi-ar$(EXE_EXT)
+	COMMONFLAGS += -DWIIU -mwup -mcpu=750 -meabi -mhard-float -D__POWERPC__ -D__ppc__ 
+	COMMONFLAGS += -U__INT32_TYPE__ -U __UINT32_TYPE__ -D__INT32_TYPE__=int -DMSB_FIRST -DWORDS_BIGENDIAN=1
+	COMMONFLAGS += -Iwiiu-deps -I$(DEVKITPRO)/portlibs/ppc/include
+	CFLAGS += $(COMMONFLAGS) -O2 -Iinclude -D_GNU_SOURCE=1 -Wall -D__LIBRETRO__ -DHAVE_POW -DHAVE_MMAP=0
+	CXXFLAGS += $(COMMONFLAGS) -g -O2  -fno-merge-constants
+	ENDIANNESS_DEFINES += -DMSB_FIRST
+	SDL_PREFIX := wiiu
+	EXTRA_INCLUDES := -Ideps
+	STATIC_LINKING = 1
+# cross Windows
+else ifeq ($(platform), wincross64)
+	TARGET := $(TARGET_NAME)_libretro.dll
+	AR = x86_64-w64-mingw32-ar
+	CC = x86_64-w64-mingw32-gcc-win32
+	CXX = x86_64-w64-mingw32-g++-win32
+	CFLAGS = -O2 -Iinclude -D_GNU_SOURCE=1 -Wall -D__LIBRETRO__ -DX86_64 -m64 -DLINUX_CONFIG -DWIN_CONFIG
+	ENDIANNESS_DEFINES := -DLSB_FIRST
+	FLAGS +=
+	EXTRA_LDF := -m64 -lmingw32 -lws2_32 -lwinmm -lole32 -mwindows -Wl,--export-all-symbols -lpng -lz
+	SDL_PREFIX := win64
+	LDFLAGS += -shared -Wl,--version-script=$(CORE_DIR)/src/link.T 
+else ifeq ($(platform), wincross64ex)
+	TARGET := libSDL2_win64.a
+	AR = /vm/mingw64-w32/bin/ar.exe
+	CC = /vm/mingw64-w32/bin/x86_64-w64-mingw32-gcc.exe
+	CXX = /vm/mingw64-w32/bin/x86_64-w64-mingw32-g++.exe
+	CFLAGS = -O2 -Iinclude -D_GNU_SOURCE=1 -Wall -D__LIBRETRO__
+ 	CFLAGS+=-DX86_64 -m64
+	LDFLAGS+=-m64
+	LDFLAGS += -static-libgcc -static-libstdc++ 
+	ENDIANNESS_DEFINES := -DLSB_FIRST
+	FLAGS +=
+	EXTRA_LDF := -lwinmm -lole32 -Wl,--export-all-symbols
+	SDL_PREFIX := win64
+else ifeq ($(platform), wincross32)
+	TARGET := libSDL2_win32.a
+	AR =  i686-w64-mingw32-ar
+	CC =  i686-w64-mingw32-gcc-win32
+	CXX =  i686-w64-mingw32-g++-win32
+	CFLAGS = -O2 -Iinclude -D_GNU_SOURCE=1 -Wall -D__LIBRETRO__ -DX86_32 -m32
+	ENDIANNESS_DEFINES := -DLSB_FIRST
+	FLAGS +=
+	EXTRA_LDF := -m32 -lmingw32 -lws2_32 -lwinmm -lole32 -mwindows -Wl,--export-all-symbols
+	SDL_PREFIX := win32
+else
+   	TARGET :=  libSDL_win.a
+   	CC = gcc
+   	CXX = g++
+	AR = ar
+	CFLAGS = -O2 -Iinclude -D_GNU_SOURCE=1 -Wall -D__LIBRETRO__
+   	LDFLAGS += -static-libgcc -static-libstdc++ 
+   	ENDIANNESS_DEFINES := -DLSB_FIRST
+   	FLAGS +=
+	EXTRA_LDF = -lwinmm -Wl,--export-all-symbols
+	SDL_PREFIX := win32
+endif
+
+MD = mkdir
+ARFLAGS = -cr
+CORE_DIR = .
+EMU = src
+
+include makevice.libretro
+
+OBJECTS =
+
+ifeq ($(DEBUG), 0)
+#   FLAGS += -O3 -ffast-math -fomit-frame-pointer
+else
+   FLAGS += -O0 -g
+endif
+
+LDFLAGS +=  $(fpic) $(SHARED) $(EXTRA_LDF) 
+FLAGS += -I. -I.. -I./include -I./sdl-libretro/include -DHAVE_CONFIG_H -DHAVE_LIBCO=1
+FLAGS += \
+		-I$(EMU) -I$(EMU)/userport -I$(EMU)/video  -I$(EMU)/core -I$(EMU)/platform \
+		-I$(EMU)/sid -I$(EMU)/drive -I$(EMU)/vicii -I$(EMU)/tape -I$(EMU)/c64 -I$(EMU)/c128 -I$(EMU)/vic20 -I$(EMU)/pet \
+		-I$(EMU)/cbm2 -I$(EMU)/plus4 -I$(EMU)/c64dtv -I$(EMU)/vdc -I$(EMU)/raster -I$(EMU)/crtc -I$(EMU)/vdrive \
+		-I$(EMU)/c64/cart -I$(EMU)/imagecontents -I$(EMU)/arch/sdl -I$(EMU)/src -I$(EMU)/diag \
+		-I$(EMU)/lib/p64 -I$(EMU)/drive/iec/c64exp -I$(EMU)/samplerdrv -I$(EMU)/drive/ieee -I$(EMU)/drive/tcbm \
+		-I$(EMU)/rtc -I$(EMU)/resid -I$(EMU)/monitor -I$(EMU)/joyport -I$(EMU)/tapeport  -I$(EMU)/drive/iec
+
+ifeq ($(platform), unix)
+FLAGS +=  -I$(EMU)/socketdrv
+endif
+
+ifeq ($(platform), wincross64)
+FLAGS +=  -I$(EMU)/socketdrv
+FLAGS +=  -I$(EMU)/rs232drv
+endif
+
+ifeq ($(platform), wiiu)
+FLAGS +=  -I./sdl-libretro/wiiu-deps
+endif
+
+WARNINGS :=  
+	
+FLAGS += -D__LIBRETRO__ $(ENDIANNESS_DEFINES) $(WARNINGS) $(fpic) 
+
+CXXFLAGS += $(FLAGS) -fpermissive
+CFLAGS += $(FLAGS) 
+
+#$(TARGET): $(EMULATORS_OBJS) 
+#	$(CXX) -o $@ src/libretro.o $(EMULATORS_OBJS)  $(LDFLAGS)
+
+all:  mkbuildout $(TARGET) $(EMULATOR_LIBS) 
+
+mkbuildout:
+	$(RM) -r buildout
+	$(MD) buildout
+
+$(TARGET): $(EMULATOR_LIBS) ./src/libretro.o buildout/libtemp.a
+	@echo Linking $@... 
+ifeq ($(platform), wiiu)
+	$(RM) x64sdl2_libretro_wiiu.a
+	$(DEVKITPPC)/bin/powerpc-eabi-ar$(EXE_EXT) -M <full.mri
+else
+	$(CXX) -o $@ src/libretro.o buildout/libtemp.a $(LDFLAGS)
+endif
+
+$(EMULATOR_LIBS): $(EMULATORS_OBJS)
+#	@echo Linking $@... buildout/libtemp.a
+#	$(CXX) -o $@ buildout/libtemp.a $(LDFLAGS)
+
+%.o: %.cpp
+	$(CXX) -c -o $@ $< $(CXXFLAGS)
+
+%.o: %.c
+	$(CC) -c -o $@ $< $(CFLAGS)
+
+buildout/libtemp.a:
+	@echo Archiving $@...
+	$(RM) $@
+	$(AR) $(ARFLAGS) $@ $^
+
+clean:
+	$(RM) -r buildout
+	rm -f $(TARGET) $(EMULATORS_OBJS) src/libretro.o
+
+.PHONY: clean

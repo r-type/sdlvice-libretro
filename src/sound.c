@@ -135,11 +135,13 @@ static sound_register_devices_t sound_register_devices[] = {
 #endif
 
 #ifdef WIN32_COMPILE
+#ifndef __LIBRETRO__
 #ifdef USE_DXSOUND
     { "dx", sound_init_dx_device, SOUND_PLAYBACK_DEVICE },
 #endif
 #ifndef __XBOX__
     { "wmm", sound_init_wmm_device, SOUND_PLAYBACK_DEVICE },
+#endif
 #endif
 #endif
 
@@ -160,7 +162,9 @@ static sound_register_devices_t sound_register_devices[] = {
 #ifdef USE_SDL_AUDIO
     { "sdl", sound_init_sdl_device, SOUND_PLAYBACK_DEVICE },
 #endif
-
+#ifdef __LIBRETRO__
+    { "retro", sound_init_retro_device, SOUND_PLAYBACK_DEVICE },
+#endif
     /* the dummy device acts as a "guard" against the drivers that create files,
        since the list will be searched top-down, and the dummy driver always
        works, no files will be created accidently */

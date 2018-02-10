@@ -45,12 +45,25 @@
 #include "archdep_win32.c"
 #endif
 
+#ifdef WIIU
+void archdep_network_shutdown(void)
+{
+    /* Nothing to be done */
+}
+#endif
+#if defined(WIIU) || defined(WIN32_COMPILE)
+int fork_coproc(int *fd_wr, int *fd_rd, char *cmd)
+{
+           return -1;
+}
+#endif
+
 int archdep_init(int *argc, char **argv)
 {
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0) {
+    if (SDL_Init(SDL_INIT_VIDEO /*| SDL_INIT_TIMER*/) < 0) {
         fprintf(stderr, "SDL error: %s\n", SDL_GetError());
         return 1;
-    }
+    } 
 
     return archdep_init_extra(argc, argv);
 }

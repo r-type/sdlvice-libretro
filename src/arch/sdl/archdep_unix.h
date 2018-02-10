@@ -32,15 +32,20 @@
 #include "archapi.h"
 
 /* Filesystem dependant operators.  */
-#define FSDEVICE_DEFAULT_DIR "."
+#define FSDEVICE_DEFAULT_DIR "/"
 #define FSDEV_DIR_SEP_STR    "/"
 #define FSDEV_DIR_SEP_CHR    '/'
 #define FSDEV_EXT_SEP_STR    "."
 #define FSDEV_EXT_SEP_CHR    '.'
 
 /* Path separator.  */
+#ifdef WIIU
+#define ARCHDEP_FINDPATH_SEPARATOR_CHAR   '|'
+#define ARCHDEP_FINDPATH_SEPARATOR_STRING "|"
+#else
 #define ARCHDEP_FINDPATH_SEPARATOR_CHAR   ':'
 #define ARCHDEP_FINDPATH_SEPARATOR_STRING ":"
+#endif
 
 /* Modes for fopen().  */
 #define MODE_READ              "r"
@@ -48,7 +53,7 @@
 #define MODE_READ_WRITE        "r+"
 #define MODE_WRITE             "w"
 #define MODE_WRITE_TEXT        "w"
-#define MODE_APPEND            "a"
+#define MODE_APPEND            "w+"
 #define MODE_APPEND_READ_WRITE "a+"
 
 /* Printer default devices.  */
@@ -82,14 +87,15 @@
 #define ARCHDEP_ETHERNET_DEFAULT_DEVICE "eth0"
 
 /* Default sound fragment size */
-#define ARCHDEP_SOUND_FRAGMENT_SIZE SOUND_FRAGMENT_MEDIUM
+#define ARCHDEP_SOUND_FRAGMENT_SIZE 1
 
 extern const char *archdep_home_path(void);
 
 /* set this path to customize the preference storage */
 extern const char *archdep_pref_path;
+extern char retro_system_data[512];
 
-#define LIBDIR VICEDIR
+#define LIBDIR retro_system_data
 
 #if defined(__FreeBSD__) || defined(__NetBSD__)
 #define DOCDIR PREFIX "/share/doc/vice"
@@ -97,7 +103,7 @@ extern const char *archdep_pref_path;
 #define DOCDIR LIBDIR "/doc"
 #endif
 
-#define VICEUSERDIR ".vice"
+#define VICEUSERDIR ""
 
 /*
     these are used for socket send/recv. in this case we might

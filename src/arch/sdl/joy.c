@@ -342,6 +342,7 @@ int joy_arch_cmdline_options_init(void)
 
 #ifdef HAVE_SDL_NUMJOYSTICKS
 
+
 /**********************************************************
  * Generic high level joy routine                         *
  **********************************************************/
@@ -507,6 +508,11 @@ void joy_arch_init_default_mapping(int joynum)
     for (i = 0; i < sdljoystick[joynum].input_max[BALL] * input_mult[BALL]; ++i) {
         sdljoystick[joynum].input[BALL][i].action = NONE;
     }
+#ifdef __LIBRETRO__ //WIIU
+    if(joynum==0){
+	wiiupad_default();
+    }
+#endif
 }
 
 int joy_arch_mapping_dump(const char *filename)
@@ -760,6 +766,241 @@ int joy_arch_mapping_load(const char *filename)
 
     return 0;
 }
+
+#ifdef __LIBRETRO__//WIIU
+
+void wiiupad_default()
+{
+//LIBRETRO WIIU PAD
+    char tmp[512];
+    int i, k;
+    sdljoystick_input_t j;
+
+    i = 0;
+        for (j = AXIS; j < NUM_INPUT_TYPES; ++j) {
+            for (k = 0; k < sdljoystick[i].input_max[j] * input_mult[j]; ++k) {
+                sdljoystick[i].input[j][k].action = NONE;
+            }
+        }
+#define ALT_PADMAP 1 
+
+#ifdef ALT_PADMAP
+
+/* Lstick->L = Joy0->L */
+/* Lstick->R = Joy0->R */
+/* Lstick->D = Joy0->D */ 
+/* Lstick->U = Joy0->U */
+//axe left right joy0
+sdljoystick[0].input[0][0].action = 1;
+sdljoystick[0].input[0][0].value.joy[0] = 0;
+sdljoystick[0].input[0][0].value.joy[1] = 8;
+//axe left left joy0
+sdljoystick[0].input[0][1].action = 1;
+sdljoystick[0].input[0][1].value.joy[0] = 0;
+sdljoystick[0].input[0][1].value.joy[1] = 4;
+//axe left down joy0
+sdljoystick[0].input[0][2].action = 1;
+sdljoystick[0].input[0][2].value.joy[0] = 0;
+sdljoystick[0].input[0][2].value.joy[1] = 2;
+//axe left up joy0
+sdljoystick[0].input[0][3].action = 1;
+sdljoystick[0].input[0][3].value.joy[0] = 0;
+sdljoystick[0].input[0][3].value.joy[1] = 1;
+
+/* Rstick->L = CURSOR LEFT/RIGHT */ 
+/* Rstick->R = SPACE */
+/* Rstick->D = RUN/STOP */ 
+/* Rstick->U = CURSOR UP/DOWN */
+//axe right right joy0
+sdljoystick[0].input[0][4].action = 2;
+sdljoystick[0].input[0][4].value.key[0] = 0;
+sdljoystick[0].input[0][4].value.key[1] = 2;
+//axe right left joy0
+sdljoystick[0].input[0][5].action = 2;
+sdljoystick[0].input[0][5].value.key[0] = 7;
+sdljoystick[0].input[0][5].value.key[1] = 4;
+//axe right down joy0
+sdljoystick[0].input[0][6].action = 2;
+sdljoystick[0].input[0][6].value.key[0] = 7;
+sdljoystick[0].input[0][6].value.key[1] = 7;
+//axe right up joy0
+sdljoystick[0].input[0][7].action = 2;
+sdljoystick[0].input[0][7].value.key[0] = 0;
+sdljoystick[0].input[0][7].value.key[1] = 7;
+
+/* Button->B = DEL */
+/* Button->Y = RETURN */
+/* Button->SELECT = UI MENU */
+/* Button->START = AUTOSTART MENU */
+//button B Joy1 fire
+sdljoystick[0].input[1][0].action = 2;
+sdljoystick[0].input[1][0].value.key[0] = 0;
+sdljoystick[0].input[1][0].value.key[1] = 0;
+//button Y keyb RETURN
+sdljoystick[0].input[1][1].action = 2;
+sdljoystick[0].input[1][1].value.key[0] = 0;
+sdljoystick[0].input[1][1].value.key[1] = 1;
+//Button SELECT UI MENU
+sdljoystick[0].input[1][2].action = 4;
+//Button START AUTOSTART MENU
+sprintf(tmp,"Autostart image\0");
+sdljoystick[0].input[1][3].action = 5;
+sdljoystick[0].input[1][3].value.ui_function = sdl_ui_hotkey_action(tmp);
+
+/* Button->PAD_UP = Joy1->U */ 
+/* Button->PAD_DOWN = Joy1->D */
+/* Button->PAD_LEFT = Joy1->L */
+/* Button->PAD_RIGHT = Joy1->R */ 
+//button PadUP keyb CURSOR UP/DOWN
+sdljoystick[0].input[1][4].action = 1;
+sdljoystick[0].input[1][4].value.joy[0] = 1;
+sdljoystick[0].input[1][4].value.joy[1] = 1;
+//button PadDOWN keyb RUN/STOP 
+sdljoystick[0].input[1][5].action = 1;
+sdljoystick[0].input[1][5].value.joy[0] = 1;
+sdljoystick[0].input[1][5].value.joy[1] = 2;
+//button PadLEFT keyb CURSOR LEFT/RIGHT
+sdljoystick[0].input[1][6].action = 1;
+sdljoystick[0].input[1][6].value.joy[0] = 1;
+sdljoystick[0].input[1][6].value.joy[1] = 4;
+//button PadRIGHT keyb SPACE 
+sdljoystick[0].input[1][7].action = 1;
+sdljoystick[0].input[1][7].value.joy[0] = 1;
+sdljoystick[0].input[1][7].value.joy[1] = 8;
+
+/* Button->A = Joy1 Fire */ 
+/* Button->X = C= */
+/* Button->L =-> Swap Joy ports */
+/* Button->R =Warp Mode */
+//button A keyb DEL
+sdljoystick[0].input[1][8].action = 1;
+sdljoystick[0].input[1][8].value.joy[0] = 1;
+sdljoystick[0].input[1][8].value.joy[1] = 16;
+//button X keyb C=
+sdljoystick[0].input[1][9].action = 2;
+sdljoystick[0].input[1][9].value.key[0] = 7;
+sdljoystick[0].input[1][9].value.key[1] = 5;
+//Button L SWAP JOY MENU
+sprintf(tmp,"Machine settings&Joystick settings&Swap joystick ports\0");
+sdljoystick[0].input[1][10].action = 5;
+sdljoystick[0].input[1][10].value.ui_function = sdl_ui_hotkey_action(tmp);
+//Button R WARPMODE MENU
+sprintf(tmp,"Speed settings&Warp mode\0");
+sdljoystick[0].input[1][11].action = 5;
+sdljoystick[0].input[1][11].value.ui_function = sdl_ui_hotkey_action(tmp);
+
+/* Button->R2 =-> Virtual Keyboard */
+/* Button->L2 =->Joy0 Fire */
+/* Button->R3 =-> Nothing (SDL mouse Left) */
+/* Button->L3 =-> Nothing (SDL mouse Right) */
+//Button L2 VIRTUAL KBD
+sprintf(tmp,"Virtual keyboard\0");
+sdljoystick[0].input[1][12].action = 5;
+sdljoystick[0].input[1][12].value.ui_function = sdl_ui_hotkey_action(tmp);
+//button L2 Joy0 fire
+sdljoystick[0].input[1][13].action = 1;
+sdljoystick[0].input[1][13].value.joy[0] = 0;
+sdljoystick[0].input[1][13].value.joy[1] = 16;
+//button L3 Nothing (SDL mouse Left)
+sdljoystick[0].input[1][14].action = 0;
+//button R3 Nothing (SDL mouse Right)
+sdljoystick[0].input[1][15].action = 0;
+#else
+//axe left right joy1
+sdljoystick[0].input[0][0].action = 1;
+sdljoystick[0].input[0][0].value.joy[0] = 0;
+sdljoystick[0].input[0][0].value.joy[1] = 8;
+//axe left left joy1
+sdljoystick[0].input[0][1].action = 1;
+sdljoystick[0].input[0][1].value.joy[0] = 0;
+sdljoystick[0].input[0][1].value.joy[1] = 4;
+//axe left down joy1
+sdljoystick[0].input[0][2].action = 1;
+sdljoystick[0].input[0][2].value.joy[0] = 0;
+sdljoystick[0].input[0][2].value.joy[1] = 2;
+//axe left up joy1
+sdljoystick[0].input[0][3].action = 1;
+sdljoystick[0].input[0][3].value.joy[0] = 0;
+sdljoystick[0].input[0][3].value.joy[1] = 1;
+//axe right right joy0
+sdljoystick[0].input[0][4].action = 1;
+sdljoystick[0].input[0][4].value.joy[0] = 1;
+sdljoystick[0].input[0][4].value.joy[1] = 8;
+//axe right left joy0
+sdljoystick[0].input[0][5].action = 1;
+sdljoystick[0].input[0][5].value.joy[0] = 1;
+sdljoystick[0].input[0][5].value.joy[1] = 4;
+//axe right down joy0
+sdljoystick[0].input[0][6].action = 1;
+sdljoystick[0].input[0][6].value.joy[0] = 1;
+sdljoystick[0].input[0][6].value.joy[1] = 2;
+//axe right up joy0
+sdljoystick[0].input[0][7].action = 1;
+sdljoystick[0].input[0][7].value.joy[0] = 1;
+sdljoystick[0].input[0][7].value.joy[1] = 1;
+
+//button B Joy1 fire
+sdljoystick[0].input[1][0].action = 1;
+sdljoystick[0].input[1][0].value.joy[0] = 0;
+sdljoystick[0].input[1][0].value.joy[1] = 16;
+//button Y keyb RETURN
+sdljoystick[0].input[1][1].action = 2;
+sdljoystick[0].input[1][1].value.key[0] = 0;
+sdljoystick[0].input[1][1].value.key[1] = 1;
+//Button SELECT UI MENU
+sdljoystick[0].input[1][2].action = 4;
+//Button START AUTOSTART MENU
+sprintf(tmp,"Autostart image\0");
+sdljoystick[0].input[1][3].action = 5;
+sdljoystick[0].input[1][3].value.ui_function = sdl_ui_hotkey_action(tmp);
+//button PadUP keyb CURSOR UP/DOWN
+sdljoystick[0].input[1][4].action = 2;
+sdljoystick[0].input[1][4].value.key[0] = 0;
+sdljoystick[0].input[1][4].value.key[1] = 7;
+//button PadDOWN keyb RUN/STOP 
+sdljoystick[0].input[1][5].action = 2;
+sdljoystick[0].input[1][5].value.key[0] = 7;
+sdljoystick[0].input[1][5].value.key[1] = 7;
+//button PadLEFT keyb CURSOR LEFT/RIGHT
+sdljoystick[0].input[1][6].action = 2;
+sdljoystick[0].input[1][6].value.key[0] = 0;
+sdljoystick[0].input[1][6].value.key[1] = 2;
+//button PadRIGHT keyb SPACE 
+sdljoystick[0].input[1][7].action = 2;
+sdljoystick[0].input[1][7].value.key[0] = 7;
+sdljoystick[0].input[1][7].value.key[1] = 4;
+//button A keyb DEL
+sdljoystick[0].input[1][8].action = 2;
+sdljoystick[0].input[1][8].value.key[0] = 0;
+sdljoystick[0].input[1][8].value.key[1] = 0;
+//button X keyb C=
+sdljoystick[0].input[1][9].action = 2;
+sdljoystick[0].input[1][9].value.key[0] = 7;
+sdljoystick[0].input[1][9].value.key[1] = 5;
+//Button L SWAP JOY MENU
+sprintf(tmp,"Machine settings&Joystick settings&Swap joystick ports\0");
+sdljoystick[0].input[1][10].action = 5;
+sdljoystick[0].input[1][10].value.ui_function = sdl_ui_hotkey_action(tmp);
+//Button R WARPMODE MENU
+sprintf(tmp,"Speed settings&Warp mode\0");
+sdljoystick[0].input[1][11].action = 5;
+sdljoystick[0].input[1][11].value.ui_function = sdl_ui_hotkey_action(tmp);
+//Button L2 VIRTUAL KBD
+sprintf(tmp,"Virtual keyboard\0");
+sdljoystick[0].input[1][12].action = 5;
+sdljoystick[0].input[1][12].value.ui_function = sdl_ui_hotkey_action(tmp);
+//button L2 Joy0 fire
+sdljoystick[0].input[1][13].action = 1;
+sdljoystick[0].input[1][13].value.joy[0] = 1;
+sdljoystick[0].input[1][13].value.joy[1] = 16;
+//button L3 Nothing (SDL mouse Left)
+sdljoystick[0].input[1][14].action = 0;
+//button R3 Nothing (SDL mouse Right)
+sdljoystick[0].input[1][15].action = 0;
+#endif
+
+}
+#endif
 
 /* ------------------------------------------------------------------------- */
 

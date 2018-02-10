@@ -519,7 +519,7 @@ int vsync_do_vsync(struct video_canvas_s *c, int been_skipped)
     frame_ticks_integer = frame_ticks / 100;
     compval = (frame_ticks_integer * 3 * timer_speed)
               + ((frame_ticks_remainder * 3 * timer_speed) / 100);
-
+#ifndef WIIU
     if ((skipped_redraw < MAX_SKIPPED_FRAMES)
         && (warp_mode_enabled
             || (skipped_redraw < (refresh_rate - 1))
@@ -533,6 +533,21 @@ int vsync_do_vsync(struct video_canvas_s *c, int been_skipped)
         skip_next_frame = 0;
         skipped_redraw = 0;
     }
+#else
+    if ((skipped_redraw < MAX_SKIPPED_FRAMES)
+        && (warp_mode_enabled)
+        ) {
+        /* printf("skipped redraw:%d timer_speed:%3d refresh_rate:%2d delay:%6lx compval:%6lx frame_ticks:%lx\n",
+               skipped_redraw,timer_speed,refresh_rate,delay,compval,frame_ticks); */
+        skip_next_frame = 1;
+        skipped_redraw++;
+    } else {
+        skip_next_frame = 0;
+        skipped_redraw = 0;
+    }
+
+#endif
+
 #if (defined(HAVE_OPENGL_SYNC)) && !defined(USE_SDLUI) && !defined(USE_SDLUI2)
 }
 #endif

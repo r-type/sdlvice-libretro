@@ -148,7 +148,7 @@ int main_program(int argc, char **argv)
         return -1;
     }
 
-    if (atexit(main_exit) < 0) {
+    if (atexit(vmain_exit) < 0) {
         archdep_startup_log_error("atexit failed.\n");
         return -1;
     }

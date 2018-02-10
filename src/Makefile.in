@@ -93,7 +93,7 @@ am_petcat_OBJECTS = charset.$(OBJEXT) findpath.$(OBJEXT) \
 petcat_OBJECTS = $(am_petcat_OBJECTS)
 petcat_DEPENDENCIES = $(ARCH_EXTRA_OBJECTS) $(fileio_lib) \
 	$(platform_lib) $(socketdrv_lib)
-am__objects_1 = alarm.$(OBJEXT) attach.$(OBJEXT) autostart.$(OBJEXT) \
+am__objects_1 = libretro.$(OBJEXT) alarm.$(OBJEXT) attach.$(OBJEXT) autostart.$(OBJEXT) \
 	autostart-prg.$(OBJEXT) cbmdos.$(OBJEXT) cbmimage.$(OBJEXT) \
 	charset.$(OBJEXT) clipboard.$(OBJEXT) clkguard.$(OBJEXT) \
 	cmdline.$(OBJEXT) color.$(OBJEXT) crc32.$(OBJEXT) \

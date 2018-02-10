@@ -619,7 +619,14 @@ static int sdl_ui_readline_input(SDLKey *key, SDLMod *mod, Uint16 *c_uni)
                 break;
         }
 #else
-        SDL_WaitEvent(&e);
+#ifdef __LIBRETRO__
+#ifdef HAVE_LIBCO
+	gui_poll_events();
+#endif
+	while(SDL_PollEvent(&e))
+#else
+	SDL_WaitEvent(&e)   /* Wait for events */
+#endif
 
         switch (e.type) {
             case SDL_KEYDOWN:
@@ -931,6 +938,11 @@ ui_menu_action_t sdl_ui_menu_poll_input(void)
     ui_menu_action_t retval = MENU_ACTION_NONE;
 
     do {
+#ifdef __LIBRETRO__
+#ifdef HAVE_LIBCO
+	gui_poll_events();
+#endif
+#endif
         SDL_Delay(20);
         retval = ui_dispatch_events();
 #ifdef HAVE_SDL_NUMJOYSTICKS

@@ -28,6 +28,6 @@
 #define VICE_MAIN_H
 
 extern int main_program(int argc, char **argv);
-extern void main_exit(void);
+extern void vmain_exit(void);
 
 #endif

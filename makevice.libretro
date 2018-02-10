@@ -1,0 +1,1019 @@
+SDLOBJ = $(CORE_DIR)
+
+SDLOBJS := \
+	$(SDLOBJ)/sdl-libretro/src/SDL_error.o $(SDLOBJ)/sdl-libretro/src/SDL_fatal.o \
+	$(SDLOBJ)/sdl-libretro/src/SDL.o $(SDLOBJ)/sdl-libretro/src/audio/SDL_wave.o \
+	$(SDLOBJ)/sdl-libretro/src/audio/SDL_audiodev.o $(SDLOBJ)/sdl-libretro/src/audio/SDL_mixer_MMX.o \
+	$(SDLOBJ)/sdl-libretro/src/audio/SDL_mixer_m68k.o $(SDLOBJ)/sdl-libretro/src/audio/SDL_audiocvt.o \
+	$(SDLOBJ)/sdl-libretro/src/audio/SDL_audio.o $(SDLOBJ)/sdl-libretro/src/audio/SDL_mixer.o \
+	$(SDLOBJ)/sdl-libretro/src/audio/SDL_mixer_MMX_VC.o $(SDLOBJ)/sdl-libretro/src/cdrom/SDL_cdrom.o \
+	$(SDLOBJ)/sdl-libretro/src/cpuinfo/SDL_cpuinfo.o $(SDLOBJ)/sdl-libretro/src/events/SDL_active.o \
+	$(SDLOBJ)/sdl-libretro/src/events/SDL_quit.o $(SDLOBJ)/sdl-libretro/src/events/SDL_mouse.o \
+	$(SDLOBJ)/sdl-libretro/src/events/SDL_events.o $(SDLOBJ)/sdl-libretro/src/events/SDL_keyboard.o \
+	$(SDLOBJ)/sdl-libretro/src/events/SDL_expose.o $(SDLOBJ)/sdl-libretro/src/events/SDL_resize.o \
+	$(SDLOBJ)/sdl-libretro/src/file/SDL_rwops.o $(SDLOBJ)/sdl-libretro/src/stdlib/SDL_string.o \
+	$(SDLOBJ)/sdl-libretro/src/stdlib/SDL_malloc.o $(SDLOBJ)/sdl-libretro/src/stdlib/SDL_iconv.o \
+	$(SDLOBJ)/sdl-libretro/src/stdlib/SDL_getenv.o $(SDLOBJ)/sdl-libretro/src/stdlib/SDL_qsort.o \
+	$(SDLOBJ)/sdl-libretro/src/stdlib/SDL_stdlib.o $(SDLOBJ)/sdl-libretro/src/thread/SDL_thread.o \
+	$(SDLOBJ)/sdl-libretro/src/timer/SDL_timer.o $(SDLOBJ)/sdl-libretro/src/video/SDL_cursor.o \
+	$(SDLOBJ)/sdl-libretro/src/video/SDL_blit_0.o $(SDLOBJ)/sdl-libretro/src/video/SDL_yuv.o \
+	$(SDLOBJ)/sdl-libretro/src/video/SDL_bmp.o $(SDLOBJ)/sdl-libretro/src/video/SDL_video.o \
+	$(SDLOBJ)/sdl-libretro/src/video/SDL_yuv_mmx.o $(SDLOBJ)/sdl-libretro/src/video/SDL_surface.o \
+	$(SDLOBJ)/sdl-libretro/src/video/SDL_pixels.o $(SDLOBJ)/sdl-libretro/src/video/SDL_stretch.o \
+	$(SDLOBJ)/sdl-libretro/src/video/SDL_blit_A.o $(SDLOBJ)/sdl-libretro/src/video/SDL_blit_N.o \
+	$(SDLOBJ)/sdl-libretro/src/video/SDL_blit_1.o $(SDLOBJ)/sdl-libretro/src/video/SDL_blit.o \
+	$(SDLOBJ)/sdl-libretro/src/video/SDL_yuv_sw.o $(SDLOBJ)/sdl-libretro/src/video/SDL_RLEaccel.o \
+	$(SDLOBJ)/sdl-libretro/src/video/SDL_gamma.o $(SDLOBJ)/sdl-libretro/src/joystick/SDL_joystick.o \
+	$(SDLOBJ)/sdl-libretro/src/video/libretro/SDL_LIBRETROmouse.o \
+	$(SDLOBJ)/sdl-libretro/src/video/libretro/SDL_LIBRETROevents.o \
+	$(SDLOBJ)/sdl-libretro/src/video/libretro/SDL_LIBRETROvideo.o \
+	$(SDLOBJ)/sdl-libretro/src/video/libretro/SDL_LIBRETROkeyboard.o $(SDLOBJ)/sdl-libretro/src/joystick/libretro/SDL_sysjoystick.o \
+	$(SDLOBJ)/sdl-libretro/src/audio/libretro/SDL_LIBRETROaudio.o \
+	$(SDLOBJ)/sdl-libretro/src/loadso/dummy/SDL_sysloadso.o 
+
+ifeq ($(platform), unix)
+SDLOBJS += $(SDLOBJ)/sdl-libretro/src/cdrom/linux/SDL_syscdrom.o \
+$(SDLOBJ)/sdl-libretro/src/thread/pthread/SDL_syscond.o \
+	$(SDLOBJ)/sdl-libretro/src/thread/pthread/SDL_syssem.o $(SDLOBJ)/sdl-libretro/src/thread/pthread/SDL_sysmutex.o \
+	$(SDLOBJ)/sdl-libretro/src/thread/pthread/SDL_systhread.o  \
+	$(SDLOBJ)/sdl-libretro/src/timer/libretro/SDL_systimer.o 
+endif
+
+ifeq ($(platform), win)
+SDLOBJS += $(SDLOBJ)/sdl-libretro/src/cdrom/win32/SDL_syscdrom.o \
+	$(SDLOBJ)/sdl-libretro/src/thread/generic/SDL_syscond.o \
+	$(SDLOBJ)/sdl-libretro/src/thread/win32/SDL_syssem.o $(SDLOBJ)/sdl-libretro/src/thread/win32/SDL_sysmutex.o \
+	$(SDLOBJ)/sdl-libretro/src/thread/win32/SDL_systhread.o \
+	$(SDLOBJ)/sdl-libretro/src/timer/win32/SDL_systimer.o 
+endif
+
+
+ifeq ($(platform), wincross64)
+SDLOBJS += $(SDLOBJ)/sdl-libretro/src/cdrom/win32/SDL_syscdrom.o \
+	$(SDLOBJ)/sdl-libretro/src/thread/generic/SDL_syscond.o \
+	$(SDLOBJ)/sdl-libretro/src/thread/win32/SDL_syssem.o $(SDLOBJ)/sdl-libretro/src/thread/win32/SDL_sysmutex.o \
+	$(SDLOBJ)/sdl-libretro/src/thread/win32/SDL_systhread.o \
+	$(SDLOBJ)/sdl-libretro/src/timer/win32/SDL_systimer.o 
+endif
+
+ifeq ($(platform), wiiu)
+SDLOBJS += $(SDLOBJ)/sdl-libretro/src/cdrom/dummy/SDL_syscdrom.o\
+	$(SDLOBJ)/sdl-libretro/src/thread/pthread/SDL_syscond.o \
+	$(SDLOBJ)/sdl-libretro/src/thread/pthread/SDL_syssem.o $(SDLOBJ)/sdl-libretro/src/thread/pthread/SDL_sysmutex.o \
+	$(SDLOBJ)/sdl-libretro/src/thread/pthread/SDL_systhread.o   \
+	$(SDLOBJ)/sdl-libretro/src/timer/libretro/SDL_systimer.o 
+endif
+
+#libvicetest.objs = \
+#$(CORE_DIR)/vicetest.o 
+
+#$(CORE_DIR)/src/libretro.o 
+libtemp.objs = \
+$(CORE_DIR)/src/alarm.o \
+$(CORE_DIR)/src/attach.o \
+$(CORE_DIR)/src/autostart-prg.o \
+$(CORE_DIR)/src/autostart.o \
+$(CORE_DIR)/src/cbmdos.o \
+$(CORE_DIR)/src/cbmimage.o \
+$(CORE_DIR)/src/charset.o \
+$(CORE_DIR)/src/clipboard.o \
+$(CORE_DIR)/src/clkguard.o \
+$(CORE_DIR)/src/cmdline.o \
+$(CORE_DIR)/src/color.o \
+$(CORE_DIR)/src/crc32.o \
+$(CORE_DIR)/src/datasette.o \
+$(CORE_DIR)/src/debug.o \
+$(CORE_DIR)/src/dma.o \
+$(CORE_DIR)/src/embedded.o \
+$(CORE_DIR)/src/event.o \
+$(CORE_DIR)/src/findpath.o \
+$(CORE_DIR)/src/fliplist.o \
+$(CORE_DIR)/src/gcr.o \
+$(CORE_DIR)/src/info.o \
+$(CORE_DIR)/src/init.o \
+$(CORE_DIR)/src/initcmdline.o \
+$(CORE_DIR)/src/interrupt.o \
+$(CORE_DIR)/src/ioutil.o \
+$(CORE_DIR)/src/kbdbuf.o \
+$(CORE_DIR)/src/keyboard.o \
+$(CORE_DIR)/src/lib.o \
+$(CORE_DIR)/src/libm_math.o \
+$(CORE_DIR)/src/log.o \
+$(CORE_DIR)/src/machine-bus.o \
+$(CORE_DIR)/src/machine.o \
+$(CORE_DIR)/src/main.o \
+$(CORE_DIR)/src/midi.o \
+$(CORE_DIR)/src/network.o \
+$(CORE_DIR)/src/opencbmlib.o \
+$(CORE_DIR)/src/palette.o \
+$(CORE_DIR)/src/ram.o \
+$(CORE_DIR)/src/rawfile.o \
+$(CORE_DIR)/src/rawnet.o \
+$(CORE_DIR)/src/resources.o \
+$(CORE_DIR)/src/romset.o \
+$(CORE_DIR)/src/screenshot.o \
+$(CORE_DIR)/src/snapshot.o \
+$(CORE_DIR)/src/socket.o \
+$(CORE_DIR)/src/sound.o \
+$(CORE_DIR)/src/sysfile.o \
+$(CORE_DIR)/src/translate.o \
+$(CORE_DIR)/src/traps.o \
+$(CORE_DIR)/src/util.o \
+$(CORE_DIR)/src/vicefeatures.o \
+$(CORE_DIR)/src/vsync.o \
+$(CORE_DIR)/src/zfile.o \
+$(CORE_DIR)/src/zipcode.o 
+
+#$(CORE_DIR)/src/arch/sdl/console_unix.o 
+
+libarch.objs = \
+$(CORE_DIR)/src/arch/sdl/archdep.o \
+$(CORE_DIR)/src/arch/sdl/blockdev.o \
+$(CORE_DIR)/src/arch/sdl/console.o \
+$(CORE_DIR)/src/arch/sdl/coproc.o \
+$(CORE_DIR)/src/arch/sdl/dynlib.o \
+$(CORE_DIR)/src/arch/sdl/fullscreen.o \
+$(CORE_DIR)/src/arch/sdl/joy.o \
+$(CORE_DIR)/src/arch/sdl/kbd.o \
+$(CORE_DIR)/src/arch/sdl/lightpendrv.o \
+$(CORE_DIR)/src/arch/sdl/menu_c128hw.o \
+$(CORE_DIR)/src/arch/sdl/menu_c64_common_expansions.o \
+$(CORE_DIR)/src/arch/sdl/menu_c64_expansions.o \
+$(CORE_DIR)/src/arch/sdl/menu_c64cart.o \
+$(CORE_DIR)/src/arch/sdl/menu_c64dtvhw.o \
+$(CORE_DIR)/src/arch/sdl/menu_c64hw.o \
+$(CORE_DIR)/src/arch/sdl/menu_c64model.o \
+$(CORE_DIR)/src/arch/sdl/menu_cbm2cart.o \
+$(CORE_DIR)/src/arch/sdl/menu_cbm2hw.o \
+$(CORE_DIR)/src/arch/sdl/menu_common.o \
+$(CORE_DIR)/src/arch/sdl/menu_debug.o \
+$(CORE_DIR)/src/arch/sdl/menu_drive.o \
+$(CORE_DIR)/src/arch/sdl/menu_drive_rom.o \
+$(CORE_DIR)/src/arch/sdl/menu_ethernet.o \
+$(CORE_DIR)/src/arch/sdl/menu_ethernetcart.o \
+$(CORE_DIR)/src/arch/sdl/menu_ffmpeg.o \
+$(CORE_DIR)/src/arch/sdl/menu_help.o \
+$(CORE_DIR)/src/arch/sdl/menu_jam.o \
+$(CORE_DIR)/src/arch/sdl/menu_joyport.o \
+$(CORE_DIR)/src/arch/sdl/menu_joystick.o \
+$(CORE_DIR)/src/arch/sdl/menu_media.o \
+$(CORE_DIR)/src/arch/sdl/menu_midi.o \
+$(CORE_DIR)/src/arch/sdl/menu_monitor.o \
+$(CORE_DIR)/src/arch/sdl/menu_mouse.o \
+$(CORE_DIR)/src/arch/sdl/menu_network.o \
+$(CORE_DIR)/src/arch/sdl/menu_petcart.o \
+$(CORE_DIR)/src/arch/sdl/menu_pethw.o \
+$(CORE_DIR)/src/arch/sdl/menu_plus4cart.o \
+$(CORE_DIR)/src/arch/sdl/menu_plus4hw.o \
+$(CORE_DIR)/src/arch/sdl/menu_printer.o \
+$(CORE_DIR)/src/arch/sdl/menu_ram.o \
+$(CORE_DIR)/src/arch/sdl/menu_reset.o \
+$(CORE_DIR)/src/arch/sdl/menu_rom.o \
+$(CORE_DIR)/src/arch/sdl/menu_rs232.o \
+$(CORE_DIR)/src/arch/sdl/menu_sampler.o \
+$(CORE_DIR)/src/arch/sdl/menu_scpu64hw.o \
+$(CORE_DIR)/src/arch/sdl/menu_screenshot.o \
+$(CORE_DIR)/src/arch/sdl/menu_settings.o \
+$(CORE_DIR)/src/arch/sdl/menu_sid.o \
+$(CORE_DIR)/src/arch/sdl/menu_snapshot.o \
+$(CORE_DIR)/src/arch/sdl/menu_sound.o \
+$(CORE_DIR)/src/arch/sdl/menu_speed.o \
+$(CORE_DIR)/src/arch/sdl/menu_tape.o \
+$(CORE_DIR)/src/arch/sdl/menu_vic20cart.o \
+$(CORE_DIR)/src/arch/sdl/menu_vic20hw.o \
+$(CORE_DIR)/src/arch/sdl/menu_video.o \
+$(CORE_DIR)/src/arch/sdl/mousedrv.o \
+$(CORE_DIR)/src/arch/sdl/rawnetarch.o \
+$(CORE_DIR)/src/arch/sdl/rs232dev.o \
+$(CORE_DIR)/src/arch/sdl/sdlmain.o \
+$(CORE_DIR)/src/arch/sdl/signals.o \
+$(CORE_DIR)/src/arch/sdl/ui.o \
+$(CORE_DIR)/src/arch/sdl/uicmdline.o \
+$(CORE_DIR)/src/arch/sdl/uifilereq.o \
+$(CORE_DIR)/src/arch/sdl/uihotkey.o \
+$(CORE_DIR)/src/arch/sdl/uimenu.o \
+$(CORE_DIR)/src/arch/sdl/uimon.o \
+$(CORE_DIR)/src/arch/sdl/uimsgbox.o \
+$(CORE_DIR)/src/arch/sdl/uipause.o \
+$(CORE_DIR)/src/arch/sdl/uipoll.o \
+$(CORE_DIR)/src/arch/sdl/uistatusbar.o \
+$(CORE_DIR)/src/arch/sdl/video.o \
+$(CORE_DIR)/src/arch/sdl/vkbd.o \
+$(CORE_DIR)/src/arch/sdl/vsidui.o \
+$(CORE_DIR)/src/arch/sdl/vsyncarch.o \
+$(CORE_DIR)/src/arch/sdl/x128_ui.o \
+$(CORE_DIR)/src/arch/sdl/x64_ui.o \
+$(CORE_DIR)/src/arch/sdl/x64dtv_ui.o \
+$(CORE_DIR)/src/arch/sdl/x64sc_ui.o \
+$(CORE_DIR)/src/arch/sdl/xcbm2_ui.o \
+$(CORE_DIR)/src/arch/sdl/xpet_ui.o \
+$(CORE_DIR)/src/arch/sdl/xplus4_ui.o \
+$(CORE_DIR)/src/arch/sdl/xscpu64_ui.o \
+$(CORE_DIR)/src/arch/sdl/xvic_ui.o 
+
+libc64.objs = \
+$(CORE_DIR)/src/c64/c64-cmdline-options.o \
+$(CORE_DIR)/src/c64/c64-memory-hacks.o \
+$(CORE_DIR)/src/c64/c64-resources.o \
+$(CORE_DIR)/src/c64/c64-snapshot.o \
+$(CORE_DIR)/src/c64/c64.o \
+$(CORE_DIR)/src/c64/c64_256k.o \
+$(CORE_DIR)/src/c64/c64bus.o \
+$(CORE_DIR)/src/c64/c64cia1.o \
+$(CORE_DIR)/src/c64/c64cia2.o \
+$(CORE_DIR)/src/c64/c64cpu.o \
+$(CORE_DIR)/src/c64/c64datasette.o \
+$(CORE_DIR)/src/c64/c64drive.o \
+$(CORE_DIR)/src/c64/c64embedded.o \
+$(CORE_DIR)/src/c64/c64export.o \
+$(CORE_DIR)/src/c64/c64fastiec.o \
+$(CORE_DIR)/src/c64/c64gluelogic.o \
+$(CORE_DIR)/src/c64/c64iec.o \
+$(CORE_DIR)/src/c64/c64io.o \
+$(CORE_DIR)/src/c64/c64keyboard.o \
+$(CORE_DIR)/src/c64/c64mem.o \
+$(CORE_DIR)/src/c64/c64meminit.o \
+$(CORE_DIR)/src/c64/c64memlimit.o \
+$(CORE_DIR)/src/c64/c64memrom.o \
+$(CORE_DIR)/src/c64/c64memsnapshot.o \
+$(CORE_DIR)/src/c64/c64model.o \
+$(CORE_DIR)/src/c64/c64parallel.o \
+$(CORE_DIR)/src/c64/c64pla.o \
+$(CORE_DIR)/src/c64/c64printer.o \
+$(CORE_DIR)/src/c64/c64rom.o \
+$(CORE_DIR)/src/c64/c64romset.o \
+$(CORE_DIR)/src/c64/c64rsuser.o \
+$(CORE_DIR)/src/c64/c64sound.o \
+$(CORE_DIR)/src/c64/c64video.o \
+$(CORE_DIR)/src/c64/patchrom.o \
+$(CORE_DIR)/src/c64/plus256k.o \
+$(CORE_DIR)/src/c64/plus60k.o \
+$(CORE_DIR)/src/c64/psid.o \
+$(CORE_DIR)/src/c64/reloc65.o 
+
+libc64cartsystem.objs = \
+$(CORE_DIR)/src/c64/cart/c64cart.o \
+$(CORE_DIR)/src/c64/cart/c64carthooks.o \
+$(CORE_DIR)/src/c64/cart/c64cartmem.o \
+$(CORE_DIR)/src/c64/cart/crt.o 
+
+libc64commoncart.objs = \
+$(CORE_DIR)/src/c64/cart/c64acia1.o \
+$(CORE_DIR)/src/c64/cart/cs8900io.o \
+$(CORE_DIR)/src/c64/cart/digimax.o \
+$(CORE_DIR)/src/c64/cart/ds12c887rtc.o \
+$(CORE_DIR)/src/c64/cart/ethernetcart.o \
+$(CORE_DIR)/src/c64/cart/georam.o \
+$(CORE_DIR)/src/c64/cart/sfx_soundexpander.o \
+$(CORE_DIR)/src/c64/cart/sfx_soundsampler.o 
+
+libc64cart.objs = \
+$(CORE_DIR)/src/c64/cart/actionreplay.o \
+$(CORE_DIR)/src/c64/cart/actionreplay2.o \
+$(CORE_DIR)/src/c64/cart/actionreplay3.o \
+$(CORE_DIR)/src/c64/cart/actionreplay4.o \
+$(CORE_DIR)/src/c64/cart/atomicpower.o \
+$(CORE_DIR)/src/c64/cart/c64-generic.o \
+$(CORE_DIR)/src/c64/cart/c64-midi.o \
+$(CORE_DIR)/src/c64/cart/c64tpi.o \
+$(CORE_DIR)/src/c64/cart/capture.o \
+$(CORE_DIR)/src/c64/cart/clockport-mp3at64.o \
+$(CORE_DIR)/src/c64/cart/clockport-rrnet.o \
+$(CORE_DIR)/src/c64/cart/clockport.o \
+$(CORE_DIR)/src/c64/cart/comal80.o \
+$(CORE_DIR)/src/c64/cart/cpmcart.o \
+$(CORE_DIR)/src/c64/cart/daa.o \
+$(CORE_DIR)/src/c64/cart/debugcart.o \
+$(CORE_DIR)/src/c64/cart/delaep256.o \
+$(CORE_DIR)/src/c64/cart/delaep64.o \
+$(CORE_DIR)/src/c64/cart/delaep7x8.o \
+$(CORE_DIR)/src/c64/cart/diashowmaker.o \
+$(CORE_DIR)/src/c64/cart/dinamic.o \
+$(CORE_DIR)/src/c64/cart/dqbb.o \
+$(CORE_DIR)/src/c64/cart/easycalc.o \
+$(CORE_DIR)/src/c64/cart/easyflash.o \
+$(CORE_DIR)/src/c64/cart/epyxfastload.o \
+$(CORE_DIR)/src/c64/cart/exos.o \
+$(CORE_DIR)/src/c64/cart/expert.o \
+$(CORE_DIR)/src/c64/cart/final.o \
+$(CORE_DIR)/src/c64/cart/final3.o \
+$(CORE_DIR)/src/c64/cart/finalplus.o \
+$(CORE_DIR)/src/c64/cart/formel64.o \
+$(CORE_DIR)/src/c64/cart/freezeframe.o \
+$(CORE_DIR)/src/c64/cart/freezemachine.o \
+$(CORE_DIR)/src/c64/cart/funplay.o \
+$(CORE_DIR)/src/c64/cart/gamekiller.o \
+$(CORE_DIR)/src/c64/cart/gmod2.o \
+$(CORE_DIR)/src/c64/cart/gs.o \
+$(CORE_DIR)/src/c64/cart/ide64.o \
+$(CORE_DIR)/src/c64/cart/isepic.o \
+$(CORE_DIR)/src/c64/cart/kcs.o \
+$(CORE_DIR)/src/c64/cart/kingsoft.o \
+$(CORE_DIR)/src/c64/cart/mach5.o \
+$(CORE_DIR)/src/c64/cart/magicdesk.o \
+$(CORE_DIR)/src/c64/cart/magicformel.o \
+$(CORE_DIR)/src/c64/cart/magicvoice.o \
+$(CORE_DIR)/src/c64/cart/mikroass.o \
+$(CORE_DIR)/src/c64/cart/mmc64.o \
+$(CORE_DIR)/src/c64/cart/mmcreplay.o \
+$(CORE_DIR)/src/c64/cart/ocean.o \
+$(CORE_DIR)/src/c64/cart/pagefox.o \
+$(CORE_DIR)/src/c64/cart/prophet64.o \
+$(CORE_DIR)/src/c64/cart/ramcart.o \
+$(CORE_DIR)/src/c64/cart/retroreplay.o \
+$(CORE_DIR)/src/c64/cart/reu.o \
+$(CORE_DIR)/src/c64/cart/rexep256.o \
+$(CORE_DIR)/src/c64/cart/rexutility.o \
+$(CORE_DIR)/src/c64/cart/rgcd.o \
+$(CORE_DIR)/src/c64/cart/ross.o \
+$(CORE_DIR)/src/c64/cart/rrnetmk3.o \
+$(CORE_DIR)/src/c64/cart/shortbus.o \
+$(CORE_DIR)/src/c64/cart/shortbus_digimax.o \
+$(CORE_DIR)/src/c64/cart/shortbus_etfe.o \
+$(CORE_DIR)/src/c64/cart/silverrock128.o \
+$(CORE_DIR)/src/c64/cart/simonsbasic.o \
+$(CORE_DIR)/src/c64/cart/snapshot64.o \
+$(CORE_DIR)/src/c64/cart/stardos.o \
+$(CORE_DIR)/src/c64/cart/stb.o \
+$(CORE_DIR)/src/c64/cart/superexplode5.o \
+$(CORE_DIR)/src/c64/cart/supergames.o \
+$(CORE_DIR)/src/c64/cart/supersnapshot.o \
+$(CORE_DIR)/src/c64/cart/supersnapshot4.o \
+$(CORE_DIR)/src/c64/cart/warpspeed.o \
+$(CORE_DIR)/src/c64/cart/westermann.o \
+$(CORE_DIR)/src/c64/cart/zaxxon.o
+
+libcore.objs = \
+$(CORE_DIR)/src/core/ata.o \
+$(CORE_DIR)/src/core/ciacore.o \
+$(CORE_DIR)/src/core/ciatimer.o \
+$(CORE_DIR)/src/core/cs8900.o \
+$(CORE_DIR)/src/core/flash040core.o \
+$(CORE_DIR)/src/core/fmopl.o \
+$(CORE_DIR)/src/core/m93c86.o \
+$(CORE_DIR)/src/core/mc6821core.o \
+$(CORE_DIR)/src/core/riotcore.o \
+$(CORE_DIR)/src/core/ser-eeprom.o \
+$(CORE_DIR)/src/core/spi-sdcard.o \
+$(CORE_DIR)/src/core/t6721.o \
+$(CORE_DIR)/src/core/tpicore.o \
+$(CORE_DIR)/src/core/viacore.o 
+
+libdiag.objs = \
+$(CORE_DIR)/src/diag/c64_diag_586220_harness.o 
+
+libdiskimage.objs = \
+$(CORE_DIR)/src/diskimage/diskimage.o \
+$(CORE_DIR)/src/diskimage/fsimage-check.o \
+$(CORE_DIR)/src/diskimage/fsimage-create.o \
+$(CORE_DIR)/src/diskimage/fsimage-dxx.o \
+$(CORE_DIR)/src/diskimage/fsimage-gcr.o \
+$(CORE_DIR)/src/diskimage/fsimage-p64.o \
+$(CORE_DIR)/src/diskimage/fsimage-probe.o \
+$(CORE_DIR)/src/diskimage/fsimage.o \
+$(CORE_DIR)/src/diskimage/rawimage.o 
+
+libdrive.objs = \
+$(CORE_DIR)/src/drive/drive-check.o \
+$(CORE_DIR)/src/drive/drive-cmdline-options.o \
+$(CORE_DIR)/src/drive/drive-overflow.o \
+$(CORE_DIR)/src/drive/drive-resources.o \
+$(CORE_DIR)/src/drive/drive-snapshot.o \
+$(CORE_DIR)/src/drive/drive-sound.o \
+$(CORE_DIR)/src/drive/drive-writeprotect.o \
+$(CORE_DIR)/src/drive/drive.o \
+$(CORE_DIR)/src/drive/drivecpu.o \
+$(CORE_DIR)/src/drive/drivecpu65c02.o \
+$(CORE_DIR)/src/drive/driveimage.o \
+$(CORE_DIR)/src/drive/drivemem.o \
+$(CORE_DIR)/src/drive/driverom.o \
+$(CORE_DIR)/src/drive/drivesync.o \
+$(CORE_DIR)/src/drive/rotation.o 
+
+libdriveiec.objs = \
+$(CORE_DIR)/src/drive/iec/cia1571d.o \
+$(CORE_DIR)/src/drive/iec/cia1581d.o \
+$(CORE_DIR)/src/drive/iec/fdd.o \
+$(CORE_DIR)/src/drive/iec/glue1571.o \
+$(CORE_DIR)/src/drive/iec/iec-cmdline-options.o \
+$(CORE_DIR)/src/drive/iec/iec-resources.o \
+$(CORE_DIR)/src/drive/iec/iec.o \
+$(CORE_DIR)/src/drive/iec/iecrom.o \
+$(CORE_DIR)/src/drive/iec/memiec.o \
+$(CORE_DIR)/src/drive/iec/pc8477.o \
+$(CORE_DIR)/src/drive/iec/via1d1541.o \
+$(CORE_DIR)/src/drive/iec/via4000.o \
+$(CORE_DIR)/src/drive/iec/wd1770.o 
+
+libdriveiecc64exp.objs = \
+$(CORE_DIR)/src/drive/iec/c64exp/c64exp-cmdline-options.o \
+$(CORE_DIR)/src/drive/iec/c64exp/c64exp-resources.o \
+$(CORE_DIR)/src/drive/iec/c64exp/dolphindos3.o \
+$(CORE_DIR)/src/drive/iec/c64exp/iec-c64exp.o \
+$(CORE_DIR)/src/drive/iec/c64exp/profdos.o \
+$(CORE_DIR)/src/drive/iec/c64exp/stardos-exp.o \
+$(CORE_DIR)/src/drive/iec/c64exp/supercard.o 
+
+libdriveiecplus4exp.objs = \
+$(CORE_DIR)/src/drive/iec/plus4exp/iec-plus4exp.o \
+$(CORE_DIR)/src/drive/iec/plus4exp/plus4exp-cmdline-options.o \
+$(CORE_DIR)/src/drive/iec/plus4exp/plus4exp-resources.o 
+
+libdriveiec128dcr.objs = \
+$(CORE_DIR)/src/drive/iec128dcr/iec128dcr-cmdline-options.o \
+$(CORE_DIR)/src/drive/iec128dcr/iec128dcr-resources.o \
+$(CORE_DIR)/src/drive/iec128dcr/iec128dcr.o \
+$(CORE_DIR)/src/drive/iec128dcr/iec128dcrrom.o 
+
+libdriveiecieee.objs = \
+$(CORE_DIR)/src/drive/iecieee/iecieee.o \
+$(CORE_DIR)/src/drive/iecieee/via2d.o 
+
+libdriveieee.objs = \
+$(CORE_DIR)/src/drive/ieee/fdc.o \
+$(CORE_DIR)/src/drive/ieee/ieee-cmdline-options.o \
+$(CORE_DIR)/src/drive/ieee/ieee-resources.o \
+$(CORE_DIR)/src/drive/ieee/ieee.o \
+$(CORE_DIR)/src/drive/ieee/ieeerom.o \
+$(CORE_DIR)/src/drive/ieee/memieee.o \
+$(CORE_DIR)/src/drive/ieee/riot1d.o \
+$(CORE_DIR)/src/drive/ieee/riot2d.o \
+$(CORE_DIR)/src/drive/ieee/via1d2031.o 
+
+libdrivetcbm.objs = \
+$(CORE_DIR)/src/drive/tcbm/glue1551.o \
+$(CORE_DIR)/src/drive/tcbm/mem1551.o \
+$(CORE_DIR)/src/drive/tcbm/tcbm-cmdline-options.o \
+$(CORE_DIR)/src/drive/tcbm/tcbm-resources.o \
+$(CORE_DIR)/src/drive/tcbm/tcbm.o \
+$(CORE_DIR)/src/drive/tcbm/tcbmrom.o \
+$(CORE_DIR)/src/drive/tcbm/tpid.o 
+
+libfileio.objs = \
+$(CORE_DIR)/src/fileio/cbmfile.o \
+$(CORE_DIR)/src/fileio/fileio.o \
+$(CORE_DIR)/src/fileio/p00.o 
+
+libfsdevice.objs = \
+$(CORE_DIR)/src/fsdevice/fsdevice-close.o \
+$(CORE_DIR)/src/fsdevice/fsdevice-cmdline-options.o \
+$(CORE_DIR)/src/fsdevice/fsdevice-flush.o \
+$(CORE_DIR)/src/fsdevice/fsdevice-open.o \
+$(CORE_DIR)/src/fsdevice/fsdevice-read.o \
+$(CORE_DIR)/src/fsdevice/fsdevice-resources.o \
+$(CORE_DIR)/src/fsdevice/fsdevice-write.o \
+$(CORE_DIR)/src/fsdevice/fsdevice.o 
+
+libgfxoutputdrv.objs = \
+$(CORE_DIR)/src/gfxoutputdrv/bmpdrv.o \
+$(CORE_DIR)/src/gfxoutputdrv/doodledrv.o \
+$(CORE_DIR)/src/gfxoutputdrv/gfxoutput.o \
+$(CORE_DIR)/src/gfxoutputdrv/godotdrv.o \
+$(CORE_DIR)/src/gfxoutputdrv/iffdrv.o \
+$(CORE_DIR)/src/gfxoutputdrv/koaladrv.o \
+$(CORE_DIR)/src/gfxoutputdrv/nativedrv.o \
+$(CORE_DIR)/src/gfxoutputdrv/pcxdrv.o \
+$(CORE_DIR)/src/gfxoutputdrv/pngdrv.o \
+$(CORE_DIR)/src/gfxoutputdrv/ppmdrv.o 
+
+libhwsiddrv.objs = \
+$(CORE_DIR)/src/hwsiddrv/catweaselmkiii-amiga-drv.o \
+$(CORE_DIR)/src/hwsiddrv/catweaselmkiii-beos-drv.o \
+$(CORE_DIR)/src/hwsiddrv/catweaselmkiii-dos-drv.o \
+$(CORE_DIR)/src/hwsiddrv/catweaselmkiii-unix-drv.o \
+$(CORE_DIR)/src/hwsiddrv/catweaselmkiii-win32-drv.o \
+$(CORE_DIR)/src/hwsiddrv/cw-amiga-clockport.o \
+$(CORE_DIR)/src/hwsiddrv/cw-amiga-device.o \
+$(CORE_DIR)/src/hwsiddrv/cw-amiga-openpci.o \
+$(CORE_DIR)/src/hwsiddrv/cw-amiga-os4.o \
+$(CORE_DIR)/src/hwsiddrv/cw-amiga-zorro.o \
+$(CORE_DIR)/src/hwsiddrv/cw-unix-device.o \
+$(CORE_DIR)/src/hwsiddrv/cw-unix-pci.o \
+$(CORE_DIR)/src/hwsiddrv/cw-win32-dll.o \
+$(CORE_DIR)/src/hwsiddrv/cw-win32-pci.o \
+$(CORE_DIR)/src/hwsiddrv/hardsid-amiga-drv.o \
+$(CORE_DIR)/src/hwsiddrv/hardsid-beos-drv.o \
+$(CORE_DIR)/src/hwsiddrv/hardsid-dos-drv.o \
+$(CORE_DIR)/src/hwsiddrv/hardsid-unix-drv.o \
+$(CORE_DIR)/src/hwsiddrv/hardsid-win32-drv.o \
+$(CORE_DIR)/src/hwsiddrv/hs-amiga-gg2isa.o \
+$(CORE_DIR)/src/hwsiddrv/hs-amiga-openpci.o \
+$(CORE_DIR)/src/hwsiddrv/hs-amiga-os4.o \
+$(CORE_DIR)/src/hwsiddrv/hs-beos-isa.o \
+$(CORE_DIR)/src/hwsiddrv/hs-beos-pci.o \
+$(CORE_DIR)/src/hwsiddrv/hs-dos-isa.o \
+$(CORE_DIR)/src/hwsiddrv/hs-dos-pci.o \
+$(CORE_DIR)/src/hwsiddrv/hs-unix-isa.o \
+$(CORE_DIR)/src/hwsiddrv/hs-unix-linux.o \
+$(CORE_DIR)/src/hwsiddrv/hs-unix-pci.o \
+$(CORE_DIR)/src/hwsiddrv/hs-win32-dll.o \
+$(CORE_DIR)/src/hwsiddrv/hs-win32-isa.o \
+$(CORE_DIR)/src/hwsiddrv/hs-win32-pci.o \
+$(CORE_DIR)/src/hwsiddrv/parsid-beos-drv.o \
+$(CORE_DIR)/src/hwsiddrv/parsid-dos-drv.o \
+$(CORE_DIR)/src/hwsiddrv/parsid-unix-drv.o \
+$(CORE_DIR)/src/hwsiddrv/parsid-win32-drv.o \
+$(CORE_DIR)/src/hwsiddrv/ps-ieee1284.o \
+$(CORE_DIR)/src/hwsiddrv/ps-unix-file.o \
+$(CORE_DIR)/src/hwsiddrv/ps-unix-io.o \
+$(CORE_DIR)/src/hwsiddrv/ps-win32-dll.o \
+$(CORE_DIR)/src/hwsiddrv/ps-win32-io.o \
+$(CORE_DIR)/src/hwsiddrv/ssi2001-amiga-drv.o \
+$(CORE_DIR)/src/hwsiddrv/ssi2001-beos-drv.o \
+$(CORE_DIR)/src/hwsiddrv/ssi2001-dos-drv.o \
+$(CORE_DIR)/src/hwsiddrv/ssi2001-unix-drv.o \
+$(CORE_DIR)/src/hwsiddrv/ssi2001-win32-drv.o 
+
+libiecbus.objs = \
+$(CORE_DIR)/src/iecbus/iecbus.o 
+
+libimagecontents.objs = \
+$(CORE_DIR)/src/imagecontents/diskcontents-block.o \
+$(CORE_DIR)/src/imagecontents/diskcontents-iec.o \
+$(CORE_DIR)/src/imagecontents/diskcontents.o \
+$(CORE_DIR)/src/imagecontents/imagecontents.o \
+$(CORE_DIR)/src/imagecontents/tapecontents.o 
+
+libiodrv.objs = \
+$(CORE_DIR)/src/iodrv/io-beos-access.o \
+$(CORE_DIR)/src/iodrv/io-unix-access.o \
+$(CORE_DIR)/src/iodrv/pci-beos-drv.o \
+$(CORE_DIR)/src/iodrv/pci-dos-drv.o \
+$(CORE_DIR)/src/iodrv/pci-unix-drv.o 
+
+libjoyport.objs = \
+$(CORE_DIR)/src/joyport/bbrtc.o \
+$(CORE_DIR)/src/joyport/cardkey.o \
+$(CORE_DIR)/src/joyport/coplin_keypad.o \
+$(CORE_DIR)/src/joyport/cx21.o \
+$(CORE_DIR)/src/joyport/cx85.o \
+$(CORE_DIR)/src/joyport/joyport.o \
+$(CORE_DIR)/src/joyport/joystick.o \
+$(CORE_DIR)/src/joyport/lightpen.o \
+$(CORE_DIR)/src/joyport/mouse.o \
+$(CORE_DIR)/src/joyport/paperclip64.o \
+$(CORE_DIR)/src/joyport/rushware_keypad.o \
+$(CORE_DIR)/src/joyport/sampler2bit.o \
+$(CORE_DIR)/src/joyport/sampler4bit.o \
+$(CORE_DIR)/src/joyport/script64_dongle.o \
+$(CORE_DIR)/src/joyport/vizawrite64_dongle.o 
+
+libp64.objs = \
+$(CORE_DIR)/src/lib/p64/p64.o 
+
+libmididrv.objs = \
+$(CORE_DIR)/src/mididrv/midi-osx-drv.o \
+$(CORE_DIR)/src/mididrv/midi-unix-drv.o \
+$(CORE_DIR)/src/mididrv/midi-win32-drv.o 
+
+libmonitor.objs = \
+$(CORE_DIR)/src/monitor/asm6502.o \
+$(CORE_DIR)/src/monitor/asm6502dtv.o \
+$(CORE_DIR)/src/monitor/asm65816.o \
+$(CORE_DIR)/src/monitor/asm6809.o \
+$(CORE_DIR)/src/monitor/asmR65C02.o \
+$(CORE_DIR)/src/monitor/asmz80.o \
+$(CORE_DIR)/src/monitor/mon_assemble6502.o \
+$(CORE_DIR)/src/monitor/mon_assemble65816.o \
+$(CORE_DIR)/src/monitor/mon_assemble6809.o \
+$(CORE_DIR)/src/monitor/mon_assembleR65C02.o \
+$(CORE_DIR)/src/monitor/mon_assemblez80.o \
+$(CORE_DIR)/src/monitor/mon_breakpoint.o \
+$(CORE_DIR)/src/monitor/mon_command.o \
+$(CORE_DIR)/src/monitor/mon_disassemble.o \
+$(CORE_DIR)/src/monitor/mon_drive.o \
+$(CORE_DIR)/src/monitor/mon_file.o \
+$(CORE_DIR)/src/monitor/mon_lex.o \
+$(CORE_DIR)/src/monitor/mon_memmap.o \
+$(CORE_DIR)/src/monitor/mon_memory.o \
+$(CORE_DIR)/src/monitor/mon_parse.o \
+$(CORE_DIR)/src/monitor/mon_register.o \
+$(CORE_DIR)/src/monitor/mon_register6502.o \
+$(CORE_DIR)/src/monitor/mon_register6502dtv.o \
+$(CORE_DIR)/src/monitor/mon_register65816.o \
+$(CORE_DIR)/src/monitor/mon_register6809.o \
+$(CORE_DIR)/src/monitor/mon_registerR65C02.o \
+$(CORE_DIR)/src/monitor/mon_registerz80.o \
+$(CORE_DIR)/src/monitor/mon_ui.o \
+$(CORE_DIR)/src/monitor/mon_util.o \
+$(CORE_DIR)/src/monitor/monitor.o \
+$(CORE_DIR)/src/monitor/monitor_network.o 
+
+libparallel.objs = \
+$(CORE_DIR)/src/parallel/parallel-trap.o \
+$(CORE_DIR)/src/parallel/parallel.o 
+
+libplatform.objs = \
+$(CORE_DIR)/src/platform/platform.o \
+$(CORE_DIR)/src/platform/platform_amigaos3_runtime_os.o \
+$(CORE_DIR)/src/platform/platform_amigaos4_runtime_os.o \
+$(CORE_DIR)/src/platform/platform_amix_runtime_os.o \
+$(CORE_DIR)/src/platform/platform_aros_runtime_os.o \
+$(CORE_DIR)/src/platform/platform_beos_runtime_os.o \
+$(CORE_DIR)/src/platform/platform_cygwin_runtime_os.o \
+$(CORE_DIR)/src/platform/platform_darwin_runtime_os.o \
+$(CORE_DIR)/src/platform/platform_dos_runtime_os.o \
+$(CORE_DIR)/src/platform/platform_dragonfly_runtime_os.o \
+$(CORE_DIR)/src/platform/platform_freebsd_runtime_os.o \
+$(CORE_DIR)/src/platform/platform_hurd_runtime_os.o \
+$(CORE_DIR)/src/platform/platform_interix_runtime_os.o \
+$(CORE_DIR)/src/platform/platform_linux_runtime_os.o \
+$(CORE_DIR)/src/platform/platform_macosx.o \
+$(CORE_DIR)/src/platform/platform_minix_runtime_os.o \
+$(CORE_DIR)/src/platform/platform_netbsd_runtime_os.o \
+$(CORE_DIR)/src/platform/platform_nextopenstep_runtime_os.o \
+$(CORE_DIR)/src/platform/platform_openbsd_runtime_os.o \
+$(CORE_DIR)/src/platform/platform_os2_runtime_os.o \
+$(CORE_DIR)/src/platform/platform_qnx4_runtime_os.o \
+$(CORE_DIR)/src/platform/platform_qnx6_runtime_os.o \
+$(CORE_DIR)/src/platform/platform_rhapsody_runtime_os.o \
+$(CORE_DIR)/src/platform/platform_sco_runtime_os.o \
+$(CORE_DIR)/src/platform/platform_skyos_runtime_os.o \
+$(CORE_DIR)/src/platform/platform_solaris_runtime_os.o \
+$(CORE_DIR)/src/platform/platform_sortix_runtime_os.o \
+$(CORE_DIR)/src/platform/platform_sunos_runtime_os.o \
+$(CORE_DIR)/src/platform/platform_syllable_runtime_os.o \
+$(CORE_DIR)/src/platform/platform_ultrix_runtime_os.o \
+$(CORE_DIR)/src/platform/platform_windows_runtime_os.o \
+$(CORE_DIR)/src/platform/platform_x86_runtime_cpu.o 
+
+libprinterdrv.objs = \
+$(CORE_DIR)/src/printerdrv/driver-select.o \
+$(CORE_DIR)/src/printerdrv/drv-1520.o \
+$(CORE_DIR)/src/printerdrv/drv-ascii.o \
+$(CORE_DIR)/src/printerdrv/drv-mps803.o \
+$(CORE_DIR)/src/printerdrv/drv-nl10.o \
+$(CORE_DIR)/src/printerdrv/drv-raw.o \
+$(CORE_DIR)/src/printerdrv/interface-serial.o \
+$(CORE_DIR)/src/printerdrv/interface-userport.o \
+$(CORE_DIR)/src/printerdrv/output-graphics.o \
+$(CORE_DIR)/src/printerdrv/output-select.o \
+$(CORE_DIR)/src/printerdrv/output-text.o \
+$(CORE_DIR)/src/printerdrv/printer-serial.o \
+$(CORE_DIR)/src/printerdrv/printer-userport.o \
+$(CORE_DIR)/src/printerdrv/printer.o 
+
+libraster.objs = \
+$(CORE_DIR)/src/raster/raster-cache.o \
+$(CORE_DIR)/src/raster/raster-canvas.o \
+$(CORE_DIR)/src/raster/raster-changes.o \
+$(CORE_DIR)/src/raster/raster-cmdline-options.o \
+$(CORE_DIR)/src/raster/raster-line-changes-sprite.o \
+$(CORE_DIR)/src/raster/raster-line-changes.o \
+$(CORE_DIR)/src/raster/raster-line.o \
+$(CORE_DIR)/src/raster/raster-modes.o \
+$(CORE_DIR)/src/raster/raster-resources.o \
+$(CORE_DIR)/src/raster/raster-sprite-cache.o \
+$(CORE_DIR)/src/raster/raster-sprite-status.o \
+$(CORE_DIR)/src/raster/raster-sprite.o \
+$(CORE_DIR)/src/raster/raster.o 
+
+libresid.objs = \
+$(CORE_DIR)/src/resid/dac.o \
+$(CORE_DIR)/src/resid/envelope.o \
+$(CORE_DIR)/src/resid/extfilt.o \
+$(CORE_DIR)/src/resid/filter.o \
+$(CORE_DIR)/src/resid/pot.o \
+$(CORE_DIR)/src/resid/sid.o \
+$(CORE_DIR)/src/resid/version.o \
+$(CORE_DIR)/src/resid/voice.o \
+$(CORE_DIR)/src/resid/wave.o 
+
+librs232drv.objs = \
+$(CORE_DIR)/src/rs232drv/rs232.o \
+$(CORE_DIR)/src/rs232drv/rs232drv.o \
+$(CORE_DIR)/src/rs232drv/rs232net.o \
+$(CORE_DIR)/src/rs232drv/rsuser.o 
+
+librtc.objs = \
+$(CORE_DIR)/src/rtc/bq4830y.o \
+$(CORE_DIR)/src/rtc/ds1202_1302.o \
+$(CORE_DIR)/src/rtc/ds1216e.o \
+$(CORE_DIR)/src/rtc/ds12c887.o \
+$(CORE_DIR)/src/rtc/ds1307.o \
+$(CORE_DIR)/src/rtc/ds1602.o \
+$(CORE_DIR)/src/rtc/pcf8583.o \
+$(CORE_DIR)/src/rtc/rtc-58321a.o \
+$(CORE_DIR)/src/rtc/rtc-72421.o \
+$(CORE_DIR)/src/rtc/rtc.o 
+
+libsamplerdrv.objs = \
+$(CORE_DIR)/src/samplerdrv/file_drv.o \
+$(CORE_DIR)/src/samplerdrv/portaudio_drv.o \
+$(CORE_DIR)/src/samplerdrv/sampler.o 
+
+libserial.objs = \
+$(CORE_DIR)/src/serial/fsdrive.o \
+$(CORE_DIR)/src/serial/serial-device.o \
+$(CORE_DIR)/src/serial/serial-iec-bus.o \
+$(CORE_DIR)/src/serial/serial-iec-device.o \
+$(CORE_DIR)/src/serial/serial-iec-lib.o \
+$(CORE_DIR)/src/serial/serial-iec.o \
+$(CORE_DIR)/src/serial/serial-realdevice.o \
+$(CORE_DIR)/src/serial/serial-trap.o \
+$(CORE_DIR)/src/serial/serial.o 
+
+libsid.objs = \
+$(CORE_DIR)/src/sid/catweaselmkiii.o \
+$(CORE_DIR)/src/sid/fastsid.o \
+$(CORE_DIR)/src/sid/hardsid.o \
+$(CORE_DIR)/src/sid/parsid.o \
+$(CORE_DIR)/src/sid/resid.o \
+$(CORE_DIR)/src/sid/sid-cmdline-options.o \
+$(CORE_DIR)/src/sid/sid-resources.o \
+$(CORE_DIR)/src/sid/sid-snapshot.o \
+$(CORE_DIR)/src/sid/sid.o \
+$(CORE_DIR)/src/sid/ssi2001.o 
+
+libsocketdrv.objs = \
+$(CORE_DIR)/src/socketdrv/socketdrv.o 
+
+libsounddrv.objs = \
+$(CORE_DIR)/src/sounddrv/soundaiff.o \
+$(CORE_DIR)/src/sounddrv/sounddummy.o \
+$(CORE_DIR)/src/sounddrv/sounddump.o \
+$(CORE_DIR)/src/sounddrv/soundfs.o \
+$(CORE_DIR)/src/sounddrv/soundiff.o \
+$(CORE_DIR)/src/sounddrv/soundmovie.o \
+$(CORE_DIR)/src/sounddrv/soundretro.o \
+$(CORE_DIR)/src/sounddrv/soundsdl.o \
+$(CORE_DIR)/src/sounddrv/soundvoc.o \
+$(CORE_DIR)/src/sounddrv/soundwav.o 
+
+libtape.objs = \
+$(CORE_DIR)/src/tape/t64.o \
+$(CORE_DIR)/src/tape/tap.o \
+$(CORE_DIR)/src/tape/tape-internal.o \
+$(CORE_DIR)/src/tape/tape-snapshot.o \
+$(CORE_DIR)/src/tape/tape.o \
+$(CORE_DIR)/src/tape/tapeimage.o 
+
+libtapeport.objs = \
+$(CORE_DIR)/src/tapeport/cp-clockf83.o \
+$(CORE_DIR)/src/tapeport/dtl-basic-dongle.o \
+$(CORE_DIR)/src/tapeport/sense-dongle.o \
+$(CORE_DIR)/src/tapeport/tape_diag_586220_harness.o \
+$(CORE_DIR)/src/tapeport/tapelog.o \
+$(CORE_DIR)/src/tapeport/tapeport.o 
+
+libuserport.objs = \
+$(CORE_DIR)/src/userport/userport.o \
+$(CORE_DIR)/src/userport/userport_4bit_sampler.o \
+$(CORE_DIR)/src/userport/userport_8bss.o \
+$(CORE_DIR)/src/userport/userport_dac.o \
+$(CORE_DIR)/src/userport/userport_diag_586220_harness.o \
+$(CORE_DIR)/src/userport/userport_digimax.o \
+$(CORE_DIR)/src/userport/userport_joystick.o \
+$(CORE_DIR)/src/userport/userport_rtc_58321a.o \
+$(CORE_DIR)/src/userport/userport_rtc_ds1307.o 
+
+libvdrive.objs = \
+$(CORE_DIR)/src/vdrive/vdrive-bam.o \
+$(CORE_DIR)/src/vdrive/vdrive-command.o \
+$(CORE_DIR)/src/vdrive/vdrive-dir.o \
+$(CORE_DIR)/src/vdrive/vdrive-iec.o \
+$(CORE_DIR)/src/vdrive/vdrive-internal.o \
+$(CORE_DIR)/src/vdrive/vdrive-rel.o \
+$(CORE_DIR)/src/vdrive/vdrive-snapshot.o \
+$(CORE_DIR)/src/vdrive/vdrive.o 
+
+libvicii.objs = \
+$(CORE_DIR)/src/vicii/vicii-badline.o \
+$(CORE_DIR)/src/vicii/vicii-clock-stretch.o \
+$(CORE_DIR)/src/vicii/vicii-cmdline-options.o \
+$(CORE_DIR)/src/vicii/vicii-color.o \
+$(CORE_DIR)/src/vicii/vicii-draw.o \
+$(CORE_DIR)/src/vicii/vicii-fetch.o \
+$(CORE_DIR)/src/vicii/vicii-irq.o \
+$(CORE_DIR)/src/vicii/vicii-mem.o \
+$(CORE_DIR)/src/vicii/vicii-phi1.o \
+$(CORE_DIR)/src/vicii/vicii-resources.o \
+$(CORE_DIR)/src/vicii/vicii-snapshot.o \
+$(CORE_DIR)/src/vicii/vicii-sprites.o \
+$(CORE_DIR)/src/vicii/vicii-stubs.o \
+$(CORE_DIR)/src/vicii/vicii-timing.o \
+$(CORE_DIR)/src/vicii/vicii.o 
+
+libvideo.objs = \
+$(CORE_DIR)/src/video/render1x1.o \
+$(CORE_DIR)/src/video/render1x1crt.o \
+$(CORE_DIR)/src/video/render1x1ntsc.o \
+$(CORE_DIR)/src/video/render1x1pal.o \
+$(CORE_DIR)/src/video/render1x2.o \
+$(CORE_DIR)/src/video/render1x2crt.o \
+$(CORE_DIR)/src/video/render2x2.o \
+$(CORE_DIR)/src/video/render2x2crt.o \
+$(CORE_DIR)/src/video/render2x2ntsc.o \
+$(CORE_DIR)/src/video/render2x2pal.o \
+$(CORE_DIR)/src/video/render2x4.o \
+$(CORE_DIR)/src/video/render2x4crt.o \
+$(CORE_DIR)/src/video/renderscale2x.o \
+$(CORE_DIR)/src/video/renderyuv.o \
+$(CORE_DIR)/src/video/video-canvas.o \
+$(CORE_DIR)/src/video/video-cmdline-options.o \
+$(CORE_DIR)/src/video/video-color.o \
+$(CORE_DIR)/src/video/video-render-1x2.o \
+$(CORE_DIR)/src/video/video-render-2x2.o \
+$(CORE_DIR)/src/video/video-render-crt.o \
+$(CORE_DIR)/src/video/video-render-pal.o \
+$(CORE_DIR)/src/video/video-render.o \
+$(CORE_DIR)/src/video/video-resources.o \
+$(CORE_DIR)/src/video/video-sound.o \
+$(CORE_DIR)/src/video/video-viewport.o 
+
+
+#buildout/libvicetest.a: $(libvicetest.objs)
+
+#buildout/libtemp.a: $(libtemp.objs)
+
+#buildout/libarch.a: $(libarch.objs)
+
+#buildout/libc64.a: $(libc64.objs)
+
+#buildout/libc64cartsystem.a: $(libc64cartsystem.objs)
+
+#buildout/libc64commoncart.a: $(libc64commoncart.objs)
+
+#buildout/libc64cart.a: $(libc64cart.objs)
+
+#buildout/libcore.a: $(libcore.objs)
+
+#buildout/libdiag.a: $(libdiag.objs)
+
+#buildout/libdiskimage.a: $(libdiskimage.objs)
+
+#buildout/libdrive.a: $(libdrive.objs)
+
+#buildout/libdriveiec.a: $(libdriveiec.objs)
+
+#buildout/libdriveiecc64exp.a: $(libdriveiecc64exp.objs)
+
+#buildout/libdriveiecplus4exp.a: $(libdriveiecplus4exp.objs)
+
+#buildout/libdriveiec128dcr.a: $(libdriveiec128dcr.objs)
+
+#buildout/libdriveiecieee.a: $(libdriveiecieee.objs)
+
+#buildout/libdriveieee.a: $(libdriveieee.objs)
+
+#buildout/libdrivetcbm.a: $(libdrivetcbm.objs)
+
+#buildout/libfileio.a: $(libfileio.objs)
+
+#buildout/libfsdevice.a: $(libfsdevice.objs)
+
+#buildout/libgfxoutputdrv.a: $(libgfxoutputdrv.objs)
+
+#buildout/libhwsiddrv.a: $(libhwsiddrv.objs)
+
+#buildout/libiecbus.a: $(libiecbus.objs)
+
+#buildout/libimagecontents.a: $(libimagecontents.objs)
+
+#buildout/libiodrv.a: $(libiodrv.objs)
+
+#buildout/libjoyport.a: $(libjoyport.objs)
+
+#buildout/libp64.a: $(libp64.objs)
+
+#buildout/libmididrv.a: $(libmididrv.objs)
+
+#buildout/libmonitor.a: $(libmonitor.objs)
+
+#buildout/libparallel.a: $(libparallel.objs)
+
+#buildout/libplatform.a: $(libplatform.objs)
+
+#buildout/libprinterdrv.a: $(libprinterdrv.objs)
+
+#buildout/libraster.a: $(libraster.objs)
+
+#buildout/libresid.a: $(libresid.objs)
+
+#buildout/librs232drv.a: $(librs232drv.objs)
+
+#buildout/librtc.a: $(librtc.objs)
+
+#buildout/libsamplerdrv.a: $(libsamplerdrv.objs)
+
+#buildout/libserial.a: $(libserial.objs)
+
+#buildout/libsid.a: $(libsid.objs)
+
+#buildout/libsocketdrv.a: $(libsocketdrv.objs)
+
+#buildout/libsounddrv.a: $(libsounddrv.objs)
+
+#buildout/libtape.a: $(libtape.objs)
+
+#buildout/libtapeport.a: $(libtapeport.objs)
+
+#buildout/libuserport.a: $(libuserport.objs)
+
+#buildout/libvdrive.a: $(libvdrive.objs)
+
+#buildout/libvicii.a: $(libvicii.objs)
+
+#buildout/libvideo.a: $(libvideo.objs)
+
+##buildout/libvicetest.a 
+EMULATOR_LIBS = \
+buildout/libtemp.a \
+buildout/libarch.a \
+buildout/libc64.a \
+buildout/libc64cartsystem.a \
+buildout/libc64commoncart.a \
+buildout/libc64cart.a \
+buildout/libcore.a \
+buildout/libdiag.a \
+buildout/libdiskimage.a \
+buildout/libdrive.a \
+buildout/libdriveiec.a \
+buildout/libdriveiecc64exp.a \
+buildout/libdriveiecplus4exp.a \
+buildout/libdriveiec128dcr.a \
+buildout/libdriveiecieee.a \
+buildout/libdriveieee.a \
+buildout/libdrivetcbm.a \
+buildout/libfileio.a \
+buildout/libfsdevice.a \
+buildout/libgfxoutputdrv.a \
+buildout/libhwsiddrv.a \
+buildout/libiecbus.a \
+buildout/libimagecontents.a \
+buildout/libiodrv.a \
+buildout/libjoyport.a \
+buildout/libp64.a \
+buildout/libmididrv.a \
+buildout/libmonitor.a \
+buildout/libparallel.a \
+buildout/libplatform.a \
+buildout/libprinterdrv.a \
+buildout/libraster.a \
+buildout/libresid.a \
+buildout/librs232drv.a \
+buildout/librtc.a \
+buildout/libsamplerdrv.a \
+buildout/libserial.a \
+buildout/libsid.a \
+buildout/libsocketdrv.a \
+buildout/libsounddrv.a \
+buildout/libtape.a \
+buildout/libtapeport.a \
+buildout/libuserport.a \
+buildout/libvdrive.a \
+buildout/libvicii.a \
+buildout/libvideo.a 
+
+#$(libvicetest.objs) 
+
+EMULATORS_OBJS = \
+$(libtemp.objs) \
+$(libarch.objs) \
+$(libc64.objs) \
+$(libc64cartsystem.objs) \
+$(libc64commoncart.objs) \
+$(libc64cart.objs) \
+$(libcore.objs) \
+$(libdiag.objs) \
+$(libdiskimage.objs) \
+$(libdrive.objs) \
+$(libdriveiec.objs) \
+$(libdriveiecc64exp.objs) \
+$(libdriveiecplus4exp.objs) \
+$(libdriveiec128dcr.objs) \
+$(libdriveiecieee.objs) \
+$(libdriveieee.objs) \
+$(libdrivetcbm.objs) \
+$(libfileio.objs) \
+$(libfsdevice.objs) \
+$(libgfxoutputdrv.objs) \
+$(libhwsiddrv.objs) \
+$(libiecbus.objs) \
+$(libimagecontents.objs) \
+$(libiodrv.objs) \
+$(libjoyport.objs) \
+$(libp64.objs) \
+$(libmididrv.objs) \
+$(libmonitor.objs) \
+$(libparallel.objs) \
+$(libplatform.objs) \
+$(libprinterdrv.objs) \
+$(libraster.objs) \
+$(libresid.objs) \
+$(librs232drv.objs) \
+$(librtc.objs) \
+$(libsamplerdrv.objs) \
+$(libserial.objs) \
+$(libsid.objs) \
+$(libsocketdrv.objs) \
+$(libsounddrv.objs) \
+$(libtape.objs) \
+$(libtapeport.objs) \
+$(libuserport.objs) \
+$(libvdrive.objs) \
+$(libvicii.objs) \
+$(libvideo.objs) \
+$(SDLOBJS)
+
+

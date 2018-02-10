@@ -307,6 +307,7 @@ base_sources = \
 	keyboard.c \
 	lib.c \
 	libm_math.c \
+	libretro.c \
 	log.c \
 	machine-bus.c \
 	machine.c \

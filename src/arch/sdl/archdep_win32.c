@@ -260,7 +260,9 @@ char *archdep_program_name(void)
 }
 
 char boot_path[MAX_PATH];
-
+#ifdef __LIBRETRO__
+extern char retro_system_data[512];
+#endif
 const char *archdep_boot_path(void)
 {
     char *checkpath;
@@ -273,7 +275,10 @@ const char *archdep_boot_path(void)
         checkpath--;
     }
     *checkpath = 0;
-
+#ifdef __LIBRETRO__
+ printf("bootp:(%s)\n",retro_system_data);
+ return retro_system_data;
+#endif
     return boot_path;
 }
 

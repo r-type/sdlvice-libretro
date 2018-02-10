@@ -180,12 +180,12 @@ FILE *sysfile_open(const char *name, char **complete_path_return,
 
     p = findpath(name, expanded_system_path, IOUTIL_ACCESS_R_OK);
 
-    if (p == NULL) {
+    if (p == NULL) {//printf("p:(NULL)\n");
         if (complete_path_return != NULL) {
             *complete_path_return = NULL;
         }
         return NULL;
-    } else {
+    } else {// printf("p:(%s)\n",p);
         f = fopen(p, open_mode);
 
         if (f == NULL || complete_path_return == NULL) {

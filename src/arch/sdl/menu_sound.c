@@ -230,6 +230,12 @@ static ui_menu_entry_t sound_output_driver_menu[] = {
       radio_SoundDeviceName_callback,
       (ui_callback_data_t)"sdl" },
 #endif
+#ifdef __LIBRETRO__
+    { "RETRO",
+      MENU_ENTRY_RESOURCE_RADIO,
+      radio_SoundDeviceName_callback,
+      (ui_callback_data_t)"retro" },
+#endif
 #ifdef USE_DMEDIA
     { "SGI",
       MENU_ENTRY_RESOURCE_RADIO,
