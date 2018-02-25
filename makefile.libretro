@@ -41,7 +41,7 @@ else ifneq (,$(findstring android,$(platform)))
 	AR = arm-linux-androideabi-ar
 # Wii U
 else ifeq ($(platform), wiiu)
-	TARGET := $(TARGET_NAME)_wiiu_libretro.a
+	TARGET := $(TARGET_NAME)_libretro_wiiu.a
 	CC = $(DEVKITPPC)/bin/powerpc-eabi-gcc$(EXE_EXT)
 	CXX = $(DEVKITPPC)/bin/powerpc-eabi-g++$(EXE_EXT)
 	AR = $(DEVKITPPC)/bin/powerpc-eabi-ar$(EXE_EXT)
