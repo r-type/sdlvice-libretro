@@ -1,5 +1,0 @@
-CREATE x64sdl2_libretro_wiiu.a
-ADDLIB ./buildout/libtemp.a
-ADDMOD ./src/libretro.o
-SAVE
-END

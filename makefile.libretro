@@ -67,7 +67,7 @@ else ifeq ($(platform), wincross64)
 	SDL_PREFIX := win64
 	LDFLAGS += -shared -Wl,--version-script=$(CORE_DIR)/src/link.T 
 else ifeq ($(platform), wincross64ex)
-	TARGET := libSDL2_win64.a
+	TARGET := $(TARGET_NAME)_libretro.dll
 	AR = /vm/mingw64-w32/bin/ar.exe
 	CC = /vm/mingw64-w32/bin/x86_64-w64-mingw32-gcc.exe
 	CXX = /vm/mingw64-w32/bin/x86_64-w64-mingw32-g++.exe
@@ -80,7 +80,7 @@ else ifeq ($(platform), wincross64ex)
 	EXTRA_LDF := -lwinmm -lole32 -Wl,--export-all-symbols
 	SDL_PREFIX := win64
 else ifeq ($(platform), wincross32)
-	TARGET := libSDL2_win32.a
+	TARGET := $(TARGET_NAME)_libretro.dll
 	AR =  i686-w64-mingw32-ar
 	CC =  i686-w64-mingw32-gcc-win32
 	CXX =  i686-w64-mingw32-g++-win32
@@ -90,7 +90,7 @@ else ifeq ($(platform), wincross32)
 	EXTRA_LDF := -m32 -lmingw32 -lws2_32 -lwinmm -lole32 -mwindows -Wl,--export-all-symbols
 	SDL_PREFIX := win32
 else
-   	TARGET :=  libSDL_win.a
+	TARGET := $(TARGET_NAME)_libretro.dll
    	CC = gcc
    	CXX = g++
 	AR = ar
@@ -120,12 +120,12 @@ endif
 LDFLAGS +=  $(fpic) $(SHARED) $(EXTRA_LDF) 
 FLAGS += -I. -I.. -I./include -I./sdl-libretro/include -DHAVE_CONFIG_H -DHAVE_LIBCO=1
 FLAGS += \
-		-I$(EMU) -I$(EMU)/userport -I$(EMU)/video  -I$(EMU)/core -I$(EMU)/platform \
-		-I$(EMU)/sid -I$(EMU)/drive -I$(EMU)/vicii -I$(EMU)/tape -I$(EMU)/c64 -I$(EMU)/c128 -I$(EMU)/vic20 -I$(EMU)/pet \
-		-I$(EMU)/cbm2 -I$(EMU)/plus4 -I$(EMU)/c64dtv -I$(EMU)/vdc -I$(EMU)/raster -I$(EMU)/crtc -I$(EMU)/vdrive \
-		-I$(EMU)/c64/cart -I$(EMU)/imagecontents -I$(EMU)/arch/sdl -I$(EMU)/src -I$(EMU)/diag \
-		-I$(EMU)/lib/p64 -I$(EMU)/drive/iec/c64exp -I$(EMU)/samplerdrv -I$(EMU)/drive/ieee -I$(EMU)/drive/tcbm \
-		-I$(EMU)/rtc -I$(EMU)/resid -I$(EMU)/monitor -I$(EMU)/joyport -I$(EMU)/tapeport  -I$(EMU)/drive/iec
+	-I$(EMU) -I$(EMU)/userport -I$(EMU)/video  -I$(EMU)/core -I$(EMU)/platform \
+	-I$(EMU)/sid -I$(EMU)/drive -I$(EMU)/vicii -I$(EMU)/tape -I$(EMU)/c64 -I$(EMU)/c128 -I$(EMU)/vic20 -I$(EMU)/pet \
+	-I$(EMU)/cbm2 -I$(EMU)/plus4 -I$(EMU)/c64dtv -I$(EMU)/vdc -I$(EMU)/raster -I$(EMU)/crtc -I$(EMU)/vdrive \
+	-I$(EMU)/c64/cart -I$(EMU)/imagecontents -I$(EMU)/arch/sdl -I$(EMU)/src -I$(EMU)/diag \
+	-I$(EMU)/lib/p64 -I$(EMU)/drive/iec/c64exp -I$(EMU)/samplerdrv -I$(EMU)/drive/ieee -I$(EMU)/drive/tcbm \
+	-I$(EMU)/rtc -I$(EMU)/resid -I$(EMU)/monitor -I$(EMU)/joyport -I$(EMU)/tapeport  -I$(EMU)/drive/iec
 
 ifeq ($(platform), unix)
 FLAGS +=  -I$(EMU)/socketdrv
@@ -137,7 +137,7 @@ FLAGS +=  -I$(EMU)/rs232drv
 endif
 
 ifeq ($(platform), wiiu)
-FLAGS +=  -I./sdl-libretro/wiiu-deps
+FLAGS +=  -I./sdl-libretro/wiiu-deps -I./sdl-libretro
 endif
 
 WARNINGS :=  
@@ -147,27 +147,16 @@ FLAGS += -D__LIBRETRO__ $(ENDIANNESS_DEFINES) $(WARNINGS) $(fpic)
 CXXFLAGS += $(FLAGS) -fpermissive
 CFLAGS += $(FLAGS) 
 
-#$(TARGET): $(EMULATORS_OBJS) 
-#	$(CXX) -o $@ src/libretro.o $(EMULATORS_OBJS)  $(LDFLAGS)
+all: $(TARGET) 
 
-all:  mkbuildout $(TARGET) $(EMULATOR_LIBS) 
-
-mkbuildout:
-	$(RM) -r buildout
-	$(MD) buildout
-
-$(TARGET): $(EMULATOR_LIBS) ./src/libretro.o buildout/libtemp.a
+$(TARGET): $(EMULATORS_OBJS) ./src/libretro.o 
 	@echo Linking $@... 
 ifeq ($(platform), wiiu)
-	$(RM) x64sdl2_libretro_wiiu.a
-	$(DEVKITPPC)/bin/powerpc-eabi-ar$(EXE_EXT) -M <full.mri
+	$(RM) $@
+	$(DEVKITPPC)/bin/powerpc-eabi-ar$(EXE_EXT) $(ARFLAGS) $@ $^
 else
 	$(CXX) -o $@ src/libretro.o buildout/libtemp.a $(LDFLAGS)
 endif
-
-$(EMULATOR_LIBS): $(EMULATORS_OBJS)
-#	@echo Linking $@... buildout/libtemp.a
-#	$(CXX) -o $@ buildout/libtemp.a $(LDFLAGS)
 
 %.o: %.cpp
 	$(CXX) -c -o $@ $< $(CXXFLAGS)
@@ -175,13 +164,7 @@ $(EMULATOR_LIBS): $(EMULATORS_OBJS)
 %.o: %.c
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-buildout/libtemp.a:
-	@echo Archiving $@...
-	$(RM) $@
-	$(AR) $(ARFLAGS) $@ $^
-
 clean:
-	$(RM) -r buildout
 	rm -f $(TARGET) $(EMULATORS_OBJS) src/libretro.o
 
 .PHONY: clean
