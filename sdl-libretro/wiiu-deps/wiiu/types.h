@@ -10,7 +10,7 @@
 #define FALSE 0
 #endif
 
-typedef int BOOL;
+typedef unsigned int BOOL;
 
 typedef uint8_t u8;
 typedef uint16_t u16;
