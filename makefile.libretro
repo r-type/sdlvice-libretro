@@ -50,6 +50,7 @@ else ifeq ($(platform), wiiu)
 	COMMONFLAGS += -Iwiiu-deps -I$(DEVKITPRO)/portlibs/ppc/include
 	CFLAGS += $(COMMONFLAGS) -O2 -Iinclude -D_GNU_SOURCE=1 -Wall -D__LIBRETRO__ -DHAVE_POW -DHAVE_MMAP=0
 	CXXFLAGS += $(COMMONFLAGS) -g -O2  -fno-merge-constants
+	EXTRA_LDF := -lpng -lz
 	ENDIANNESS_DEFINES += -DMSB_FIRST
 	SDL_PREFIX := wiiu
 	EXTRA_INCLUDES := -Ideps
